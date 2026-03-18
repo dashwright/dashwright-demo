@@ -10,7 +10,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.58.2-noble
+      image: node:24-bookworm
 
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
 
       - name: Run Playwright tests
         run: npx playwright test

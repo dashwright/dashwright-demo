@@ -110,9 +110,9 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 🖥️ Install Xvfb for Cypress
+      - name: 🖥️ Install Xvfb and Python for Cypress
         run: |
-          apt-get update && apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth
+          apt-get update && apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth python3 python3-pip
 
       - name: 🌐 Install Cypress
         run: npx cypress install
@@ -125,8 +125,8 @@ jobs:
 
       - name: 📄 Convert Cypress JUnit to HTML
         run: |
-          pip3 install junit2html || pip install junit2html
-          junit2html test-reports/cypress-report/test-results.xml test-reports/cypress-report/cypress.html 2>/dev/null || true
+          pip3 install --break-system-packages junit2html || pip3 install junit2html
+          python3 -m junit2html test-reports/cypress-report/test-results.xml test-reports/cypress-report/cypress.html || true
 
       - name: 📤 Upload Cypress report
         uses: actions/upload-artifact@v4

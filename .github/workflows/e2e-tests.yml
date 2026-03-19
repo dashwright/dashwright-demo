@@ -77,7 +77,8 @@ jobs:
 
       - name: 🧪 Run WebdriverIO tests
         run: |
-          cd $GITHUB_WORKSPACE && npx wdio run wdio.conf.ts > test-reports/wdio-report/output.log 2>&1 || true
+          cd $GITHUB_WORKSPACE && npx wdio run wdio.conf.ts > test-reports/wdio-report/output.log 2>&1
+          grep -q "passed" test-reports/wdio-report/output.log && echo "TESTS_PASSED" >> test-reports/wdio-report/output.log || echo "TESTS_FAILED" >> test-reports/wdio-report/output.log
 
       - name: 📤 Upload WebdriverIO report
         uses: actions/upload-artifact@v4

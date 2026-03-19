@@ -2,7 +2,7 @@ import type { Options } from 'webdriver';
 
 export const config: Options.Testrunner = {
   runner: 'local',
-  specs: ['/Users/miranda/Projects/dashwright-demo/tests/wdio/specs/**/*.ts'],
+  specs: ['tests/wdio/specs/**/*.ts'],
   exclude: [],
   capabilities: [{
     browserName: 'chromium',

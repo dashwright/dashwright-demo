@@ -43,14 +43,6 @@ jobs:
           path: test-reports/playwright-report/
           retention-days: 30
 
-      - name: 📤 Upload Playwright results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-results
-          path: test-reports/playwright-results/
-          retention-days: 30
-
   webdriverio-js:
     name: 🕷️ WebdriverIO (JavaScript)
     timeout-minutes: 60

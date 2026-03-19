@@ -1,4 +1,4 @@
-import type { Options } from '@wdio/testrunner';
+import type { Options } from 'webdriver';
 
 export const config: Options.Testrunner = {
   runner: 'local',
@@ -7,7 +7,7 @@ export const config: Options.Testrunner = {
   capabilities: [{
     browserName: 'chromium',
     'goog:chromeOptions': {
-      args: ['--headless', '--no-sandbox'],
+      args: ['--no-sandbox'],
     },
   }],
   logLevel: 'info',
@@ -15,7 +15,7 @@ export const config: Options.Testrunner = {
   waitforTimeout: 10000,
   connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
-  services: [],
+  // services: ['devtools'],
   framework: 'mocha',
   outputDir: './test-reports/wdio',
   reporters: [['spec', { showStack: true }]],

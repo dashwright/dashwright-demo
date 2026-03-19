@@ -1,4 +1,4 @@
-import { browser } from '@wdio/globals';
+import { browser, $, expect } from '@wdio/globals';
 
 describe('WebdriverIO Browser Tests', () => {
   it('should load a webpage', async () => {

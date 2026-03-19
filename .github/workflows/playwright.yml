@@ -116,3 +116,43 @@ jobs:
           name: cypress-report
           path: test-reports/cypress/
           retention-days: 30
+
+  selenium:
+    name: Run Selenium Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: node:24-bookworm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-selenium-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-selenium-
+
+      - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install Chromium and ChromeDriver
+        run: |
+          npx playwright install chromium
+          npm install -D chromedriver
+          export CHROME_BIN=$(which chromium-browser || which chromium || which google-chrome || echo "/usr/bin/chromium-browser")
+
+      - name: Run Selenium tests
+        run: npx cross-env CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
+
+      - name: Upload Selenium report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selenium-report
+          path: test-reports/selenium/
+          retention-days: 30

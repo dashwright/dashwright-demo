@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["es5", "dom"],
-    "types": ["cypress", "node"],
+    "types": ["cypress", "node", "@wdio/globals"],
     "moduleResolution": "node",
     "resolveJsonModule": true
   },
-  "include": ["cypress/**/*.ts", "tests/cypress/**/*.ts"]
+  "include": ["cypress/**/*.ts", "tests/cypress/**/*.ts", "tests/wdio/**/*.ts"]
 }

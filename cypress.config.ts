@@ -7,10 +7,10 @@ export default defineConfig({
     baseUrl: 'https://example.com',
     video: false,
     screenshotOnRunFailure: true,
-    screenshotsFolder: 'cypress-report/screenshots',
+    screenshotsFolder: 'test-reports/cypress/screenshots',
     reporter: 'spec',
     reporterOptions: {
-      reportDir: 'cypress-report',
+      reportDir: 'test-reports/cypress',
       overwrite: false,
     },
   },

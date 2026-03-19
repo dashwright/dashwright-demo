@@ -109,8 +109,8 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 🌐 Install Cypress browsers
-        run: npx cypress install --browser chrome
+      - name: 🌐 Install Cypress
+        run: npx cypress install
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/cypress-report

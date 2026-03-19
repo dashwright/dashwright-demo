@@ -1,5 +1,5 @@
 node_modules/
-playwright-report/
+test-reports/
 test-results/
 .playwright/
 *.log

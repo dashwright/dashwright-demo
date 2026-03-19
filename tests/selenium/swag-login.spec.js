@@ -12,8 +12,6 @@ const chromeOptions = () => {
   options.addArguments('--disable-extensions');
   options.addArguments('--disable-infobars');
   options.addArguments('--disable-save-password-bubble');
-  options.addArguments('--ignore-certificate-errors');
-  options.addArguments('--disable-web-security');
   options.setUserPreferences({
     'credentials_enable_service': false,
     'credentials_enable_autosignin': false,
@@ -27,31 +25,18 @@ const chromeOptions = () => {
 };
 
 async function dismissPopup(driver) {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 2; i++) {
     try {
-      const alert = await driver.wait(until.alertIsPresent(), 1000);
-      await alert.dismiss();
-      console.log('  ⚠️ Dismissed alert');
-      await driver.sleep(200);
+      await driver.wait(until.alertIsPresent(), 500);
+      await driver.switchTo().alert().dismiss();
     } catch {}
     
-    const selectors = [
-      '[data-test="error"]', 
-      '[aria-label="Close"]', 
-      '[aria-label="OK"]',
-      'button:has-text("OK")', 
-      'button:has-text("Dismiss")', 
-      'button:has-text("Close")',
-      '.ev赿' // breach popup close
-    ];
-    
+    const selectors = ['[data-test="error"]', '[aria-label="Close"]', '[aria-label="OK"]'];
     for (const sel of selectors) {
       try {
         const btn = driver.findElement(By.css(sel));
         if (await btn.isDisplayed()) {
           await btn.click();
-          await driver.sleep(200);
-          console.log('  ⚠️ Dismissed popup');
           break;
         }
       } catch {}
@@ -62,15 +47,12 @@ async function dismissPopup(driver) {
 async function login(driver, username, password) {
   await driver.get(BASE_URL);
   await dismissPopup(driver);
-  
   await driver.findElement(By.css('#user-name')).clear();
   await driver.findElement(By.css('#user-name')).sendKeys(username || '');
   await dismissPopup(driver);
-  
   await driver.findElement(By.css('#password')).clear();
   await driver.findElement(By.css('#password')).sendKeys(password || '');
   await dismissPopup(driver);
-  
   await driver.findElement(By.css('#login-button')).click();
   await dismissPopup(driver);
 }
@@ -79,25 +61,10 @@ async function getErrorMessage(driver) {
   await dismissPopup(driver);
   try {
     await driver.wait(until.elementLocated(By.css('[data-test="error"]')), 2000);
-    await dismissPopup(driver);
     return await driver.findElement(By.css('[data-test="error"]')).getText();
   } catch {
     return null;
   }
-}
-
-async function runTest(driver, name, username, password, checkFn, successMsg) {
-  try {
-    await login(driver, username, password);
-    await dismissPopup(driver);
-    if (await checkFn(driver)) {
-      console.log(`✓ ${successMsg || name}`);
-      return true;
-    }
-  } catch (e) {
-    console.log(`  ⚠️ ${name}: ${e.message}`);
-  }
-  return false;
 }
 
 async function runTests() {
@@ -114,50 +81,100 @@ async function runTests() {
     let passed = 0;
 
     // Test 1: Valid Login - Standard User
-    if (await runTest(driver, 'Standard User', 'standard_user', 'secret_sauce', 
-      async (d) => (await d.getCurrentUrl()).includes('inventory.html'), 'Valid Login - Standard User')) passed++;
+    try {
+      await login(driver, 'standard_user', 'secret_sauce');
+      if ((await driver.getCurrentUrl()).includes('inventory.html')) {
+        console.log('✓ Valid Login - Standard User');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Standard User: ${e.message}`); }
 
     // Test 2: Invalid Login - Locked Out User
-    if (await runTest(driver, 'Locked Out', 'locked_out_user', 'secret_sauce',
-      async (d) => { const t = await getErrorMessage(d); return t && t.includes('locked out'); }, 
-      'Invalid Login - Locked Out User')) passed++;
+    try {
+      await login(driver, 'locked_out_user', 'secret_sauce');
+      const t = await getErrorMessage(driver);
+      if (t && t.includes('locked out')) {
+        console.log('✓ Invalid Login - Locked Out User');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Locked Out: ${e.message}`); }
 
     // Test 3: Invalid Login - Wrong username
-    if (await runTest(driver, 'Wrong username', 'wrong_username', 'secret_sauce',
-      async (d) => { const t = await getErrorMessage(d); return t && t.includes('do not match'); },
-      'Invalid Login - Wrong username')) passed++;
+    try {
+      await login(driver, 'wrong_username', 'secret_sauce');
+      const t = await getErrorMessage(driver);
+      if (t && t.includes('do not match')) {
+        console.log('✓ Invalid Login - Wrong username');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Wrong username: ${e.message}`); }
 
     // Test 4: Invalid Login - Wrong password
-    if (await runTest(driver, 'Wrong password', 'standard_user', 'wrong_password',
-      async (d) => { const t = await getErrorMessage(d); return t && t.includes('do not match'); },
-      'Invalid Login - Wrong password')) passed++;
+    try {
+      await login(driver, 'standard_user', 'wrong_password');
+      const t = await getErrorMessage(driver);
+      if (t && t.includes('do not match')) {
+        console.log('✓ Invalid Login - Wrong password');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Wrong password: ${e.message}`); }
 
     // Test 5: Invalid Login - Empty username
-    if (await runTest(driver, 'Empty username', '', 'secret_sauce',
-      async (d) => { const t = await getErrorMessage(d); return t && t.includes('Username is required'); },
-      'Invalid Login - Empty username')) passed++;
+    try {
+      await login(driver, '', 'secret_sauce');
+      const t = await getErrorMessage(driver);
+      if (t && t.includes('Username is required')) {
+        console.log('✓ Invalid Login - Empty username');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Empty username: ${e.message}`); }
 
     // Test 6: Invalid Login - Empty password
-    if (await runTest(driver, 'Empty password', 'standard_user', '',
-      async (d) => { const t = await getErrorMessage(d); return t && t.includes('Password is required'); },
-      'Invalid Login - Empty password')) passed++;
+    try {
+      await login(driver, 'standard_user', '');
+      const t = await getErrorMessage(driver);
+      if (t && t.includes('Password is required')) {
+        console.log('✓ Invalid Login - Empty password');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Empty password: ${e.message}`); }
 
     // Test 7: Valid Login - Problem User
-    if (await runTest(driver, 'Problem User', 'problem_user', 'secret_sauce',
-      async (d) => (await d.getCurrentUrl()).includes('inventory.html'), 'Valid Login - Problem User')) passed++;
+    try {
+      await login(driver, 'problem_user', 'secret_sauce');
+      if ((await driver.getCurrentUrl()).includes('inventory.html')) {
+        console.log('✓ Valid Login - Problem User');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Problem User: ${e.message}`); }
 
     // Test 8: Valid Login - Performance Glitch User
-    if (await runTest(driver, 'Performance Glitch', 'performance_glitch_user', 'secret_sauce',
-      async (d) => { await d.sleep(8000); await dismissPopup(d); return (await d.getCurrentUrl()).includes('inventory.html'); },
-      'Valid Login - Performance Glitch User')) passed++;
+    try {
+      await login(driver, 'performance_glitch_user', 'secret_sauce');
+      await driver.sleep(8000);
+      if ((await driver.getCurrentUrl()).includes('inventory.html')) {
+        console.log('✓ Valid Login - Performance Glitch User');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Performance Glitch: ${e.message}`); }
 
     // Test 9: Valid Login - Error User
-    if (await runTest(driver, 'Error User', 'error_user', 'secret_sauce',
-      async (d) => (await d.getCurrentUrl()).includes('inventory.html'), 'Valid Login - Error User')) passed++;
+    try {
+      await login(driver, 'error_user', 'secret_sauce');
+      if ((await driver.getCurrentUrl()).includes('inventory.html')) {
+        console.log('✓ Valid Login - Error User');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Error User: ${e.message}`); }
 
     // Test 10: Valid Login - Visual User
-    if (await runTest(driver, 'Visual User', 'visual_user', 'secret_sauce',
-      async (d) => (await d.getCurrentUrl()).includes('inventory.html'), 'Valid Login - Visual User')) passed++;
+    try {
+      await login(driver, 'visual_user', 'secret_sauce');
+      if ((await driver.getCurrentUrl()).includes('inventory.html')) {
+        console.log('✓ Valid Login - Visual User');
+        passed++;
+      }
+    } catch (e) { console.log(`  ⚠️ Visual User: ${e.message}`); }
 
     console.log(`\n✅ ${passed}/10 passing`);
     console.log('\nSpec Files: 1 passed, 1 total (100% completed)');

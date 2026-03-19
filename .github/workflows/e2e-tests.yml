@@ -1,4 +1,4 @@
-name: E2E Tests
+name: 🚀 E2E Tests
 
 on:
   push:
@@ -9,8 +9,8 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  playwright:
-    name: Run Playwright Tests
+  playwright-ts:
+    name: 🎭 Playwright (TypeScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache node_modules
+      - name: 🗄️ Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
         with:
@@ -28,14 +28,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Run Playwright tests
+      - name: 🧪 Run Playwright tests
         run: npx playwright test
 
-      - name: Upload Playwright report
+      - name: 📤 Upload Playwright report
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -43,8 +43,8 @@ jobs:
           path: test-reports/playwright/
           retention-days: 30
 
-  wdio:
-    name: Run WebdriverIO Tests
+  webdriverio-js:
+    name: 🕷️ WebdriverIO (JavaScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache node_modules
+      - name: 🗄️ Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
         with:
@@ -62,17 +62,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-wdio-
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Install Chromium
+      - name: 🌐 Install Chromium browser
         run: npx playwright install chromium
 
-      - name: Run WebdriverIO tests
+      - name: 🧪 Run WebdriverIO tests
         run: npx wdio run wdio.conf.ts
 
-      - name: Upload WebdriverIO report
+      - name: 📤 Upload WebdriverIO report
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -80,8 +80,8 @@ jobs:
           path: test-reports/wdio/
           retention-days: 30
 
-  cypress:
-    name: Run Cypress Tests
+  cypress-js:
+    name: 🔷 Cypress (JavaScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -90,7 +90,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache node_modules
+      - name: 🗄️ Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
         with:
@@ -99,17 +99,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Install Cypress browsers
+      - name: 🌐 Install Cypress browsers
         run: npx cypress install --browser chrome
 
-      - name: Run Cypress tests
+      - name: 🧪 Run Cypress tests
         run: npx cypress run --browser chrome
 
-      - name: Upload Cypress report
+      - name: 📤 Upload Cypress report
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -117,8 +117,8 @@ jobs:
           path: test-reports/cypress/
           retention-days: 30
 
-  selenium:
-    name: Run Selenium Tests
+  selenium-js:
+    name: 🌈 Selenium (JavaScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -127,7 +127,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache node_modules
+      - name: 🗄️ Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
         with:
@@ -136,20 +136,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-selenium-
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Install Chromium and ChromeDriver
+      - name: 🌐 Install Chromium & ChromeDriver
         run: |
           npx playwright install chromium
           npm install -D chromedriver
           export CHROME_BIN=$(which chromium-browser || which chromium || which google-chrome || echo "/usr/bin/chromium-browser")
 
-      - name: Run Selenium tests
+      - name: 🧪 Run Selenium tests
         run: npx cross-env CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
 
-      - name: Upload Selenium report
+      - name: 📤 Upload Selenium report
         uses: actions/upload-artifact@v4
         if: always()
         with:

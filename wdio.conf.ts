@@ -2,6 +2,7 @@ import type { Options } from 'webdriver';
 
 export const config: Options.Testrunner = {
   runner: 'local',
+  rootDir: './',
   specs: ['tests/wdio/specs/**/*.ts'],
   exclude: [],
   capabilities: [{

@@ -11,7 +11,7 @@ export const config: Options.Testrunner = {
     },
   }],
   logLevel: 'info',
-  baseUrl: 'https://example.com',
+  baseUrl: 'https://www.saucedemo.com',
   waitforTimeout: 10000,
   connectionRetryTimeout: 120000,
   connectionRetryCount: 3,

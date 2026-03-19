@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: E2E Tests
 
 on:
   push:
@@ -9,7 +9,8 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  test:
+  playwright:
+    name: Run Playwright Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -34,9 +35,84 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
+          retention-days: 30
+
+  wdio:
+    name: Run WebdriverIO Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: node:24-bookworm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-wdio-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-wdio-
+
+      - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install chromium
+
+      - name: Run WebdriverIO tests
+        run: npx wdio run wdio.conf.ts
+
+      - name: Upload WebdriverIO report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wdio-report
+          path: wdio-report/
+          retention-days: 30
+
+  cypress:
+    name: Run Cypress Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: node:24-bookworm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
+      - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install Cypress browsers
+        run: npx cypress install --browser chrome
+
+      - name: Run Cypress tests
+        run: npx cypress run --browser chrome
+
+      - name: Upload Cypress report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-report
+          path: cypress-report/
           retention-days: 30

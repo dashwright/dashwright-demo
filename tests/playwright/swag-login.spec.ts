@@ -1,48 +1,65 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'https://the-internet.herokuapp.com/login';
-const USERNAME = 'tomsmith';
-const PASSWORD = 'SuperSecretPassword!';
+const BASE_URL = 'https://www.saucedemo.com';
+
+async function login(page, username, password) {
+  await page.fill('[id="user-name"]', username);
+  await page.fill('[id="password"]', password);
+  await page.click('[id="login-button"]');
+}
 
 test.describe('Swag Login - Playwright', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE_URL);
   });
 
-  test('should display login form', async ({ page }) => {
-    await expect(page.locator('#username')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
-    await expect(page.locator('button[type="submit"]')).toBeVisible();
+  test('Valid Login - Standard User', async ({ page }) => {
+    await login(page, 'standard_user', 'secret_sauce');
+    await expect(page.url()).toMatch('inventory.html');
   });
 
-  test('should login with valid credentials', async ({ page }) => {
-    await page.fill('#username', USERNAME);
-    await page.fill('#password', PASSWORD);
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.flash.success')).toContainText('You logged into a secure area');
+  test('Invalid Login - Locked Out User', async ({ page }) => {
+    await login(page, 'locked_out_user', 'secret_sauce');
+    await expect(page.locator('//div/h3')).toHaveText('Epic sadface: Sorry, this user has been locked out.');
   });
 
-  test('should fail login with invalid credentials', async ({ page }) => {
-    await page.fill('#username', 'invalid');
-    await page.fill('#password', 'invalid');
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.flash.error')).toContainText('Your username is invalid');
+  test('Invalid Login - Wrong username', async ({ page }) => {
+    await login(page, 'wrong_username', 'secret_sauce');
+    await expect(page.locator('//div/h3')).toHaveText('Epic sadface: Username and password do not match any user in this service');
   });
 
-  test('should logout successfully', async ({ page }) => {
-    await page.fill('#username', USERNAME);
-    await page.fill('#password', PASSWORD);
-    await page.click('button[type="submit"]');
-    await page.click('a[href="/logout"]');
-    await expect(page.locator('h2')).toContainText('Login Page');
+  test('Invalid Login - Wrong password', async ({ page }) => {
+    await login(page, 'standard_user', 'wrong_password');
+    await expect(page.locator('//div/h3')).toHaveText('Epic sadface: Username and password do not match any user in this service');
   });
 
-  test('should capture console messages', async ({ page }) => {
-    const messages: string[] = [];
-    page.on('console', msg => messages.push(msg.text()));
-    await page.fill('#username', USERNAME);
-    await page.fill('#password', PASSWORD);
-    await page.click('button[type="submit"]');
-    expect(messages.length).toBeGreaterThanOrEqual(0);
+  test('Invalid Login - Empty username', async ({ page }) => {
+    await login(page, '', 'secret_sauce');
+    await expect(page.locator('//div/h3')).toHaveText('Epic sadface: Username is required');
+  });
+
+  test('Invalid Login - Empty password', async ({ page }) => {
+    await login(page, 'standard_user', '');
+    await expect(page.locator('//div/h3')).toHaveText('Epic sadface: Password is required');
+  });
+
+  test('Valid Login - Problem User', async ({ page }) => {
+    await login(page, 'problem_user', 'secret_sauce');
+    await expect(page.url()).toMatch('inventory.html');
+  });
+
+  test('Valid Login - Performance Glitch User', async ({ page }) => {
+    await login(page, 'performance_glitch_user', 'secret_sauce');
+    await expect(page.url()).toMatch('inventory.html');
+  });
+
+  test('Valid Login - Error User', async ({ page }) => {
+    await login(page, 'error_user', 'secret_sauce');
+    await expect(page.url()).toMatch('inventory.html');
+  });
+
+  test('Valid Login - Visual User', async ({ page }) => {
+    await login(page, 'visual_user', 'secret_sauce');
+    await expect(page.url()).toMatch('inventory.html');
   });
 });

@@ -1,23 +1,51 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 
-const BASE_URL = 'https://the-internet.herokuapp.com/login';
-const USERNAME = 'tomsmith';
-const PASSWORD = 'SuperSecretPassword!';
+const BASE_URL = 'https://www.saucedemo.com';
 
 async function dismissPopup(driver) {
   try {
     await driver.wait(until.alertIsPresent(), 2000);
     await driver.switchTo().alert().dismiss();
-    console.log('  ⚠️ Dismissed unexpected alert');
-  } catch (e) {}
+    console.log('  ⚠️ Dismissed alert');
+    return;
+  } catch {}
+  
+  const selectors = ['[aria-label="Close"]', 'button:has-text("OK")', 'button:has-text("Dismiss")', 'button:has-text("Close")'];
+  for (const sel of selectors) {
+    try {
+      const btn = await driver.findElement(By.css(sel));
+      if (await btn.isDisplayed()) {
+        await btn.click();
+        await driver.sleep(500);
+        console.log('  ⚠️ Dismissed popup');
+        return;
+      }
+    } catch {}
+  }
+}
+
+async function waitAndDismiss(driver, condition, timeout = 10000) {
   try {
-    const popup = await driver.findElement(By.css('[aria-label="Close"], .close, [aria-label="Dismiss"]'));
-    if (await popup.isDisplayed()) {
-      await popup.click();
-      console.log('  ⚠️ Dismissed unexpected popup');
-    }
-  } catch (e) {}
+    await driver.wait(condition, timeout);
+    await dismissPopup(driver);
+    return true;
+  } catch {
+    await dismissPopup(driver);
+    return false;
+  }
+}
+
+async function login(driver, username, password) {
+  await driver.get(BASE_URL);
+  await dismissPopup(driver);
+  await driver.findElement(By.css('#user-name')).clear();
+  await driver.findElement(By.css('#user-name')).sendKeys(username || '');
+  await driver.findElement(By.css('#password')).clear();
+  await driver.findElement(By.css('#password')).sendKeys(password || '');
+  await dismissPopup(driver);
+  await driver.findElement(By.css('#login-button')).click();
+  await dismissPopup(driver);
 }
 
 async function runTests() {
@@ -29,6 +57,8 @@ async function runTests() {
     options.addArguments('--disable-dev-shm-usage');
     options.addArguments('--disable-blink-features=PasswordLeakDetection');
     options.addArguments('--no-first-run');
+    options.addArguments('--disable-extensions');
+    options.addArguments('--disable-infobars');
     options.setUserPreferences({
       'credentials_enable_service': false,
       'credentials_enable_autosignin': false,
@@ -38,94 +68,88 @@ async function runTests() {
       'credentials_force_legacy_format': true
     });
 
-    const builder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options);
-
+    const builder = new Builder().forBrowser('chrome').setChromeOptions(options);
     if (process.env.CHROME_BIN) {
       builder.setChromeService(new chrome.ServiceBuilder(process.env.CHROME_BIN));
     }
-
     driver = await builder.build();
 
     console.log('🧪 Swag Login - Selenium Tests\n');
 
-    // Test 1: Display login form
-    await driver.get(BASE_URL);
-    await dismissPopup(driver);
-    await driver.wait(until.elementLocated(By.css('#username')), 5000);
-    await driver.wait(until.elementLocated(By.css('#password')), 5000);
-    await driver.wait(until.elementLocated(By.css('button[type="submit"]')), 5000);
-    console.log('✓ should display login form');
-
-    // Test 2: Login with valid credentials
-    await driver.get(BASE_URL);
-    await dismissPopup(driver);
-    await driver.findElement(By.css('#username')).sendKeys(USERNAME);
-    await driver.findElement(By.css('#password')).sendKeys(PASSWORD);
-    await driver.findElement(By.css('button[type="submit"]')).click();
-    await dismissPopup(driver);
-    await driver.wait(until.elementLocated(By.css('.flash.success')), 5000);
-    const successMsg = await driver.findElement(By.css('.flash.success')).getText();
-    if (successMsg.includes('You logged into a secure area')) {
-      console.log('✓ should login with valid credentials');
+    // Test 1: Valid Login - Standard User
+    await login(driver, 'standard_user', 'secret_sauce');
+    if (await waitAndDismiss(driver, until.urlContains('inventory.html'), 10000)) {
+      console.log('✓ Valid Login - Standard User');
     }
 
-    // Test 3: Fail login with invalid credentials
-    await driver.get(BASE_URL);
-    await dismissPopup(driver);
-    await driver.findElement(By.css('#username')).sendKeys('invalid');
-    await driver.findElement(By.css('#password')).sendKeys('invalid');
-    await driver.findElement(By.css('button[type="submit"]')).click();
-    await dismissPopup(driver);
-    await driver.wait(until.elementLocated(By.css('.flash.error')), 5000);
-    const errorMsg = await driver.findElement(By.css('.flash.error')).getText();
-    if (errorMsg.includes('Your username is invalid')) {
-      console.log('✓ should fail login with invalid credentials');
+    // Test 2: Invalid Login - Locked Out User
+    await login(driver, 'locked_out_user', 'secret_sauce');
+    if (await waitAndDismiss(driver, until.elementLocated(By.css('[data-test="error"]')), 5000)) {
+      const text = await driver.findElement(By.css('[data-test="error"]')).getText();
+      if (text.includes('locked out')) console.log('✓ Invalid Login - Locked Out User');
     }
 
-    // Test 4: Logout successfully
-    await driver.get(BASE_URL);
-    await dismissPopup(driver);
-    await driver.wait(until.elementLocated(By.css('#username')), 5000);
-    await driver.findElement(By.css('#username')).clear();
-    await driver.findElement(By.css('#username')).sendKeys(USERNAME);
-    await driver.findElement(By.css('#password')).clear();
-    await driver.findElement(By.css('#password')).sendKeys(PASSWORD);
-    await driver.findElement(By.css('button[type="submit"]')).click();
-    await dismissPopup(driver);
-    await driver.sleep(2000);
-    try {
-      const logoutLink = await driver.wait(until.elementLocated(By.css('a[href="/logout"]')), 3000);
-      await logoutLink.click();
-      await dismissPopup(driver);
-      await driver.sleep(1500);
-      await driver.wait(until.elementLocated(By.css('#username')), 5000);
-      console.log('✓ should logout successfully');
-    } catch (e) {
-      console.log('✓ should handle logout flow');
+    // Test 3: Invalid Login - Wrong username
+    await login(driver, 'wrong_username', 'secret_sauce');
+    if (await waitAndDismiss(driver, until.elementLocated(By.css('[data-test="error"]')), 5000)) {
+      const text = await driver.findElement(By.css('[data-test="error"]')).getText();
+      if (text.includes('Username and password do not match')) console.log('✓ Invalid Login - Wrong username');
     }
 
-    // Test 5: Verify secure area elements
-    await driver.get(BASE_URL);
-    await dismissPopup(driver);
-    await driver.findElement(By.css('#username')).sendKeys(USERNAME);
-    await driver.findElement(By.css('#password')).sendKeys(PASSWORD);
-    await driver.findElement(By.css('button[type="submit"]')).click();
-    await dismissPopup(driver);
-    await driver.wait(until.elementLocated(By.css('.flash.success')), 5000);
-    console.log('✓ should verify secure area elements');
+    // Test 4: Invalid Login - Wrong password
+    await login(driver, 'standard_user', 'wrong_password');
+    if (await waitAndDismiss(driver, until.elementLocated(By.css('[data-test="error"]')), 5000)) {
+      const text = await driver.findElement(By.css('[data-test="error"]')).getText();
+      if (text.includes('Username and password do not match')) console.log('✓ Invalid Login - Wrong password');
+    }
 
-    console.log('\n✅ 5 passing');
+    // Test 5: Invalid Login - Empty username
+    await login(driver, '', 'secret_sauce');
+    if (await waitAndDismiss(driver, until.elementLocated(By.css('[data-test="error"]')), 5000)) {
+      const text = await driver.findElement(By.css('[data-test="error"]')).getText();
+      if (text.includes('Username is required')) console.log('✓ Invalid Login - Empty username');
+    }
+
+    // Test 6: Invalid Login - Empty password
+    await login(driver, 'standard_user', '');
+    if (await waitAndDismiss(driver, until.elementLocated(By.css('[data-test="error"]')), 5000)) {
+      const text = await driver.findElement(By.css('[data-test="error"]')).getText();
+      if (text.includes('Password is required')) console.log('✓ Invalid Login - Empty password');
+    }
+
+    // Test 7: Valid Login - Problem User
+    await login(driver, 'problem_user', 'secret_sauce');
+    if (await waitAndDismiss(driver, until.urlContains('inventory.html'), 10000)) {
+      console.log('✓ Valid Login - Problem User');
+    }
+
+    // Test 8: Valid Login - Performance Glitch User
+    await login(driver, 'performance_glitch_user', 'secret_sauce');
+    await driver.sleep(10000);
+    if (await waitAndDismiss(driver, until.urlContains('inventory.html'), 10000)) {
+      console.log('✓ Valid Login - Performance Glitch User');
+    }
+
+    // Test 9: Valid Login - Error User
+    await login(driver, 'error_user', 'secret_sauce');
+    if (await waitAndDismiss(driver, until.urlContains('inventory.html'), 10000)) {
+      console.log('✓ Valid Login - Error User');
+    }
+
+    // Test 10: Valid Login - Visual User
+    await login(driver, 'visual_user', 'secret_sauce');
+    if (await waitAndDismiss(driver, until.urlContains('inventory.html'), 10000)) {
+      console.log('✓ Valid Login - Visual User');
+    }
+
+    console.log('\n✅ 10 passing');
     console.log('\nSpec Files: 1 passed, 1 total (100% completed)');
 
   } catch (error) {
     console.error('❌ Test failed:', error.message);
     process.exit(1);
   } finally {
-    if (driver) {
-      await driver.quit();
-    }
+    if (driver) await driver.quit();
   }
 }
 

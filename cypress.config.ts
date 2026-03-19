@@ -4,7 +4,7 @@ export default defineConfig({
   e2e: {
     browser: 'chrome',
     specPattern: 'tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
-    baseUrl: 'https://example.com',
+    baseUrl: 'https://www.saucedemo.com',
     video: false,
     screenshotOnRunFailure: true,
     screenshotsFolder: 'test-reports/cypress/screenshots',

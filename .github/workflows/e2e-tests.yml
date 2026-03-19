@@ -40,7 +40,7 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: test-reports/playwright/
+          path: playwright-report/
           retention-days: 30
 
   webdriverio-js:
@@ -114,7 +114,7 @@ jobs:
         if: always()
         with:
           name: cypress-report
-          path: test-reports/cypress/
+          path: cypress-report/
           retention-days: 30
 
   selenium-js:
@@ -148,11 +148,3 @@ jobs:
 
       - name: 🧪 Run Selenium tests
         run: npx cross-env CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
-
-      - name: 📤 Upload Selenium report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: selenium-report
-          path: test-reports/selenium/
-          retention-days: 30

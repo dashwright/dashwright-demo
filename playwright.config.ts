@@ -10,7 +10,7 @@ export default defineConfig({
   use: {
     trace: 'on-first-retry',
   },
-  outputDir: 'test-reports/playwright',
+  outputDir: 'playwright-report',
   projects: [
     {
       name: 'chromium',

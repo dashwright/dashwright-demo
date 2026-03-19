@@ -51,7 +51,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
-      image: node:24-bookworm
+      image: node:20-bookworm
 
     steps:
       - uses: actions/checkout@v4
@@ -141,7 +141,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
-      image: node:24-bookworm
+      image: node:20-bookworm
 
     steps:
       - uses: actions/checkout@v4

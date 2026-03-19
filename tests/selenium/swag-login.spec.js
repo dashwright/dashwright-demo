@@ -25,22 +25,20 @@ const chromeOptions = () => {
 };
 
 async function dismissPopup(driver) {
-  for (let i = 0; i < 2; i++) {
+  try {
+    await driver.wait(until.alertIsPresent(), 500);
+    await driver.switchTo().alert().dismiss();
+  } catch {}
+  
+  const selectors = ['[data-test="error"]', '[aria-label="Close"]', '[aria-label="OK"]'];
+  for (const sel of selectors) {
     try {
-      await driver.wait(until.alertIsPresent(), 500);
-      await driver.switchTo().alert().dismiss();
+      const btn = driver.findElement(By.css(sel));
+      if (await btn.isDisplayed()) {
+        await btn.click();
+        break;
+      }
     } catch {}
-    
-    const selectors = ['[data-test="error"]', '[aria-label="Close"]', '[aria-label="OK"]'];
-    for (const sel of selectors) {
-      try {
-        const btn = driver.findElement(By.css(sel));
-        if (await btn.isDisplayed()) {
-          await btn.click();
-          break;
-        }
-      } catch {}
-    }
   }
 }
 
@@ -151,7 +149,7 @@ async function runTests() {
     // Test 8: Valid Login - Performance Glitch User
     try {
       await login(driver, 'performance_glitch_user', 'secret_sauce');
-      await driver.sleep(8000);
+      await driver.sleep(5000);
       if ((await driver.getCurrentUrl()).includes('inventory.html')) {
         console.log('✓ Valid Login - Performance Glitch User');
         passed++;

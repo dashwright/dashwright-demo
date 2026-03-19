@@ -2,7 +2,7 @@ import type { Options } from 'webdriver';
 
 export const config: Options.Testrunner = {
   runner: 'local',
-  specs: ['./tests/wdio/specs/**/*.ts'],
+  specs: ['/Users/miranda/Projects/dashwright-demo/tests/wdio/specs/**/*.ts'],
   exclude: [],
   capabilities: [{
     browserName: 'chromium',
@@ -18,7 +18,6 @@ export const config: Options.Testrunner = {
   // services: ['devtools'],
   framework: 'mocha',
   outputDir: './test-reports/wdio-report',
-  reporters: [['spec', { showStack: true }]],
   mochaOpts: {
     ui: 'bdd',
     timeout: 30000,

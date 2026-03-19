@@ -12,7 +12,8 @@ const chromeOptions = () => {
   options.addArguments('--disable-extensions');
   options.addArguments('--disable-infobars');
   options.addArguments('--disable-save-password-bubble');
-  options.addArguments('--disable-ooprime-credit-card-scanner');
+  options.addArguments('--ignore-certificate-errors');
+  options.addArguments('--disable-web-security');
   options.setUserPreferences({
     'credentials_enable_service': false,
     'credentials_enable_autosignin': false,
@@ -20,45 +21,69 @@ const chromeOptions = () => {
     'profile.default_content_setting_values.notifications': 2,
     'safebrowsing.enabled': false,
     'credentials_force_legacy_format': true,
-    'profile.allow_legacy_cypress_credentials': true
+    'profile.password_manager_leak_detection': false
   });
   return options;
 };
 
 async function dismissPopup(driver) {
-  try {
-    await driver.wait(until.alertIsPresent(), 1500);
-    await driver.switchTo().alert().dismiss();
-    console.log('  ⚠️ Dismissed alert');
-    return;
-  } catch {}
-  
-  const selectors = ['[aria-label="Close"]', '[data-test="error"]', 'button:has-text("OK")', 'button:has-text("Dismiss")', 'button:has-text("Close")'];
-  for (const sel of selectors) {
+  for (let i = 0; i < 5; i++) {
     try {
-      const btn = driver.findElement(By.css(sel));
-      if (await btn.isDisplayed()) {
-        await btn.click();
-        await driver.sleep(300);
-        console.log('  ⚠️ Dismissed popup');
-        return;
-      }
+      const alert = await driver.wait(until.alertIsPresent(), 1000);
+      await alert.dismiss();
+      console.log('  ⚠️ Dismissed alert');
+      await driver.sleep(200);
     } catch {}
+    
+    const selectors = [
+      '[data-test="error"]', 
+      '[aria-label="Close"]', 
+      '[aria-label="OK"]',
+      'button:has-text("OK")', 
+      'button:has-text("Dismiss")', 
+      'button:has-text("Close")',
+      '.ev赿' // breach popup close
+    ];
+    
+    for (const sel of selectors) {
+      try {
+        const btn = driver.findElement(By.css(sel));
+        if (await btn.isDisplayed()) {
+          await btn.click();
+          await driver.sleep(200);
+          console.log('  ⚠️ Dismissed popup');
+          break;
+        }
+      } catch {}
+    }
   }
 }
 
 async function login(driver, username, password) {
   await driver.get(BASE_URL);
   await dismissPopup(driver);
+  
   await driver.findElement(By.css('#user-name')).clear();
   await driver.findElement(By.css('#user-name')).sendKeys(username || '');
   await dismissPopup(driver);
+  
   await driver.findElement(By.css('#password')).clear();
   await driver.findElement(By.css('#password')).sendKeys(password || '');
   await dismissPopup(driver);
+  
   await driver.findElement(By.css('#login-button')).click();
-  await driver.sleep(500);
   await dismissPopup(driver);
+}
+
+async function getErrorMessage(driver) {
+  await dismissPopup(driver);
+  try {
+    await driver.wait(until.elementLocated(By.css('[data-test="error"]')), 2000);
+    await dismissPopup(driver);
+    return await driver.findElement(By.css('[data-test="error"]')).getText();
+  } catch {
+    return null;
+  }
 }
 
 async function runTest(driver, name, username, password, checkFn, successMsg) {
@@ -94,27 +119,27 @@ async function runTests() {
 
     // Test 2: Invalid Login - Locked Out User
     if (await runTest(driver, 'Locked Out', 'locked_out_user', 'secret_sauce',
-      async (d) => { await dismissPopup(d); const t = await d.findElement(By.css('[data-test="error"]')).getText(); return t.includes('locked out'); }, 
+      async (d) => { const t = await getErrorMessage(d); return t && t.includes('locked out'); }, 
       'Invalid Login - Locked Out User')) passed++;
 
     // Test 3: Invalid Login - Wrong username
     if (await runTest(driver, 'Wrong username', 'wrong_username', 'secret_sauce',
-      async (d) => { await dismissPopup(d); const t = await d.findElement(By.css('[data-test="error"]')).getText(); return t.includes('do not match'); },
+      async (d) => { const t = await getErrorMessage(d); return t && t.includes('do not match'); },
       'Invalid Login - Wrong username')) passed++;
 
     // Test 4: Invalid Login - Wrong password
     if (await runTest(driver, 'Wrong password', 'standard_user', 'wrong_password',
-      async (d) => { await dismissPopup(d); const t = await d.findElement(By.css('[data-test="error"]')).getText(); return t.includes('do not match'); },
+      async (d) => { const t = await getErrorMessage(d); return t && t.includes('do not match'); },
       'Invalid Login - Wrong password')) passed++;
 
     // Test 5: Invalid Login - Empty username
     if (await runTest(driver, 'Empty username', '', 'secret_sauce',
-      async (d) => { await dismissPopup(d); const t = await d.findElement(By.css('[data-test="error"]')).getText(); return t.includes('Username is required'); },
+      async (d) => { const t = await getErrorMessage(d); return t && t.includes('Username is required'); },
       'Invalid Login - Empty username')) passed++;
 
     // Test 6: Invalid Login - Empty password
     if (await runTest(driver, 'Empty password', 'standard_user', '',
-      async (d) => { await dismissPopup(d); const t = await d.findElement(By.css('[data-test="error"]')).getText(); return t.includes('Password is required'); },
+      async (d) => { const t = await getErrorMessage(d); return t && t.includes('Password is required'); },
       'Invalid Login - Empty password')) passed++;
 
     // Test 7: Valid Login - Problem User

@@ -10,7 +10,7 @@ export const config: Options.Testrunner = {
       args: ['--no-sandbox'],
     },
   }],
-  logLevel: 'info',
+  logLevel: 'silent',
   baseUrl: 'https://www.saucedemo.com',
   waitforTimeout: 10000,
   connectionRetryTimeout: 120000,

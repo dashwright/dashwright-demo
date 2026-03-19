@@ -7,10 +7,10 @@ export default defineConfig({
     baseUrl: 'https://www.saucedemo.com',
     video: false,
     screenshotOnRunFailure: true,
-    screenshotsFolder: 'test-reports/cypress/screenshots',
+    screenshotsFolder: 'test-reports/cypress-report/screenshots',
     reporter: 'spec',
     reporterOptions: {
-      reportDir: 'test-reports/cypress',
+      reportDir: 'test-reports/cypress-report',
       overwrite: false,
     },
   },

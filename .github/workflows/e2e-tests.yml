@@ -9,7 +9,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  playwright-ts:
+  playwright:
     name: 🎭 Playwright (TypeScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
           path: test-reports/playwright-report/
           retention-days: 30
 
-  webdriverio-js:
+  wdio:
     name: 🕷️ WebdriverIO (JavaScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -72,6 +72,9 @@ jobs:
       - name: 🌐 Install Chromium browser
         run: npx playwright install chromium
 
+      - name: 📁 Create Test Reports Directory
+        run: mkdir -p test-reports/wdio-report
+
       - name: 🧪 Run WebdriverIO tests
         run: npx wdio run wdio.conf.ts
 
@@ -80,10 +83,10 @@ jobs:
         if: always()
         with:
           name: wdio-report
-          path: test-reports/wdio/
+          path: test-reports/wdio-report/
           retention-days: 30
 
-  cypress-js:
+  cypress:
     name: 🔷 Cypress (JavaScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -109,6 +112,9 @@ jobs:
       - name: 🌐 Install Cypress browsers
         run: npx cypress install --browser chrome
 
+      - name: 📁 Create Test Reports Directory
+        run: mkdir -p test-reports/cypress-report
+
       - name: 🧪 Run Cypress tests
         run: npx cypress run --browser chrome
 
@@ -117,10 +123,10 @@ jobs:
         if: always()
         with:
           name: cypress-report
-          path: test-reports/cypress/
+          path: test-reports/cypress-report/
           retention-days: 30
 
-  selenium-js:
+  selenium:
     name: 🌈 Selenium (JavaScript)
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -147,7 +153,17 @@ jobs:
         run: |
           npx playwright install chromium
           npm install -D chromedriver
-          export CHROME_BIN=$(which chromium-browser || which chromium || which google-chrome || echo "/usr/bin/chromium-browser")
+
+      - name: 📁 Create Test Reports Directory
+        run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
-        run: npx cross-env CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
+        run: CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
+
+      - name: 📤 Upload Selenium report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selenium-report
+          path: test-reports/selenium-report/
+          retention-days: 30

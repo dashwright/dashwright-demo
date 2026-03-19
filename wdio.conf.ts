@@ -17,7 +17,7 @@ export const config: Options.Testrunner = {
   connectionRetryCount: 3,
   // services: ['devtools'],
   framework: 'mocha',
-  outputDir: './test-reports/wdio',
+  outputDir: './test-reports/wdio-report',
   reporters: [['spec', { showStack: true }]],
   mochaOpts: {
     ui: 'bdd',

@@ -2,8 +2,7 @@ import type { Options } from 'webdriver';
 
 export const config: Options.Testrunner = {
   runner: 'local',
-  rootDir: './',
-  specs: ['tests/wdio/specs/**/*.ts'],
+  specs: ['./tests/wdio/specs/**/*.ts'],
   exclude: [],
   capabilities: [{
     browserName: 'chromium',
@@ -16,7 +15,6 @@ export const config: Options.Testrunner = {
   waitforTimeout: 10000,
   connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
-  // services: ['devtools'],
   framework: 'mocha',
   outputDir: './test-reports/wdio-report',
   mochaOpts: {

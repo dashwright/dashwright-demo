@@ -120,7 +120,7 @@ jobs:
         run: mkdir -p test-reports/cypress-report
 
       - name: 🧪 Run Cypress tests
-        run: npx cypress run --browser chrome
+        run: npx cypress run --browser electron
 
       - name: 📄 Convert Cypress JUnit to HTML
         run: |

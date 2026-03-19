@@ -123,6 +123,11 @@ jobs:
       - name: 🧪 Run Cypress tests
         run: npx cypress run --browser electron
 
+      - name: 📄 Convert Cypress JUnit to HTML
+        run: |
+          pip3 install --break-system-packages junit2html || true
+          /usr/local/bin/junit2html test-reports/cypress-report/test-results.xml test-reports/cypress-report/cypress.html || true
+
       - name: 📤 Upload Cypress report
         uses: actions/upload-artifact@v4
         if: always()

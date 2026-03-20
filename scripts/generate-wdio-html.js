@@ -4,17 +4,28 @@ const fs = require('fs');
 const path = require('path');
 
 const outputPath = 'test-reports/wdio-report/output.log';
+const junitPath = 'test-reports/wdio-report/wdio-0-0-junit-reporter.log';
 const htmlPath = 'test-reports/wdio-report/index.html';
 
-if (!fs.existsSync(outputPath)) {
-  console.log('No output log found');
-  process.exit(0);
+let content = '';
+let passed = 0;
+let failed = 0;
+
+if (fs.existsSync(outputPath)) {
+  content = fs.readFileSync(outputPath, 'utf8');
+  passed = (content.match(/\bPASSED\b/g) || []).length;
+  failed = (content.match(/\bFAILED\b/g) || []).length;
+} else if (fs.existsSync(junitPath)) {
+  content = fs.readFileSync(junitPath, 'utf8');
+  const failuresMatch = content.match(/failures="(\d+)"/);
+  const testsMatch = content.match(/tests="(\d+)"/);
+  if (testsMatch) {
+    const total = parseInt(testsMatch[1]);
+    failed = failuresMatch ? parseInt(failuresMatch[1]) : 0;
+    passed = total - failed;
+  }
 }
 
-const content = fs.readFileSync(outputPath, 'utf8');
-
-const passed = (content.match(/\bPASSED\b/g) || []).length;
-const failed = (content.match(/\bFAILED\b/g) || []).length;
 const total = passed + failed;
 
 const testCases = [];

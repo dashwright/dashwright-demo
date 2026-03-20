@@ -8,10 +8,12 @@ export default defineConfig({
     video: false,
     screenshotOnRunFailure: true,
     screenshotsFolder: 'test-reports/cypress-report/screenshots',
-    reporter: 'mocha-junit-reporter',
+    reporter: 'mochawesome',
     reporterOptions: {
-      mochaFile: 'test-reports/cypress-report/test-results.xml',
-      toConsole: true
+      reportDir: 'test-reports/cypress-report',
+      overwrite: true,
+      html: true,
+      json: true
     },
   },
 });

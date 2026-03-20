@@ -27,7 +27,7 @@ jobs:
 
       - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/playwright-report test-reports/ctrf
@@ -72,7 +72,7 @@ jobs:
 
       - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
       - name: 🌐 Install Chromium browser
         run: npx playwright install chromium
@@ -116,7 +116,7 @@ jobs:
 
       - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
       - name: 🖥️ Install Xvfb and Python for Cypress
         run: |
@@ -160,7 +160,7 @@ jobs:
 
       - name: 📦 Install dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
       - name: 🌐 Install Chromium & ChromeDriver
         run: |

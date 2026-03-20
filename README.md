@@ -1,11 +1,9 @@
 # E2E Test Automation
 
-Multi-framework browser automation tests using **4 testing tools** with Chromium:
+Browser automation tests using **2 testing tools** with Chromium:
 
 - 🎭 **Playwright** (TypeScript)
-- 🕷️ **WebdriverIO** (JavaScript)
 - 🔷 **Cypress** (JavaScript)
-- 🌈 **Selenium** (JavaScript)
 
 ## Install
 
@@ -15,27 +13,18 @@ npm install
 
 ## Run Tests
 
-### All Frameworks
 ```bash
+# All frameworks
 npm run test:playwright
-npm run test:wdio
 npm run test:cypress
-npm run test:selenium
-```
 
-### Individual Frameworks
-```bash
-# Playwright with UI
+# Playwright
+npm run test:playwright
 npx playwright test --ui
 
-# WebdriverIO
-npx wdio run wdio.conf.ts
-
 # Cypress
+npm run test:cypress
 npx cypress run --browser chrome
-
-# Selenium
-node tests/selenium/swag-login.spec.js
 ```
 
 ## Test Site
@@ -48,10 +37,9 @@ All reports are saved in `test-reports/` folder:
 
 ```
 test-reports/
-├── playwright/     # Playwright HTML report
-├── cypress/       # Cypress report + screenshots
-├── wdio/          # WebdriverIO report
-└── selenium/      # Selenium output
+├── playwright-report/  # Playwright HTML report + CTRF JSON
+├── cypress-report/     # Cypress HTML report
+└── ctrf/              # CTRF JSON for GitHub integration
 ```
 
 ## CI

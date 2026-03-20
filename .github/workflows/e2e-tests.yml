@@ -164,17 +164,15 @@ jobs:
 
       - name: 🌐 Install Chromium & ChromeDriver
         run: |
-          npx playwright install chromium
+          apt-get update && apt-get install -y chromium
           npm install -D chromedriver
-          which chromedriver || true
-          ls /root/.cache/ms-playwright/ || true
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
         run: |
-          export CHROME_BIN=$(find /root/.cache/ms-playwright -name chrome -type f 2>/dev/null | head -1)
+          export CHROME_BIN=$(which chromium)
           echo "Using Chrome: $CHROME_BIN"
           node tests/selenium/swag-login.spec.js
 

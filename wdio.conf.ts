@@ -15,6 +15,10 @@ export const config = {
   connectionRetryCount: 3,
   framework: 'mocha',
   outputDir: './test-reports/wdio-report',
+  reporters: [
+    'dot',
+    ['junit', { outputDir: './test-reports/wdio-report' }]
+  ],
   mochaOpts: {
     ui: 'bdd',
     timeout: 30000,

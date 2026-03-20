@@ -81,7 +81,10 @@ jobs:
         run: mkdir -p test-reports/wdio-report
 
       - name: 🧪 Run WebdriverIO tests
-        run: cd $GITHUB_WORKSPACE && npx wdio run wdio.conf.ts || true
+        run: |
+          cd $GITHUB_WORKSPACE
+          npx wdio run wdio.conf.ts > test-reports/wdio-report/output.log 2>&1 || true
+          cat test-reports/wdio-report/output.log
 
       - name: 📤 Upload WebdriverIO report
         uses: actions/upload-artifact@v4

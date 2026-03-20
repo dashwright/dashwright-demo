@@ -6,7 +6,8 @@
   "scripts": {
     "test": "playwright test",
     "test:playwright": "playwright test",
-    "test:cypress": "cypress run --browser chrome && node scripts/generate-cypress-html.js"
+    "test:cypress": "cypress run --browser chrome && node scripts/generate-cypress-html.js",
+    "cleanup:artifacts": "node scripts/cleanup-artifacts.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "homepage": "https://github.com/dashwright/dashwright-demo#readme",
   "devDependencies": {
     "@cypress/webpack-batteries-included-preprocessor": "^4.0.4",
+    "@octokit/rest": "^20.0.2",
     "@playwright/test": "^1.58.2",
     "cross-env": "^10.1.0",
     "cypress": "^15.12.0",
@@ -30,6 +32,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "dotenv": "^17.3.1",
     "playwright-ctrf-json-reporter": "^0.0.28",
     "ts-node": "^10.9.2"
   }

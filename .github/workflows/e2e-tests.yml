@@ -103,3 +103,20 @@ jobs:
           name: cypress
           path: test-reports/cypress-report/
           retention-days: 30
+
+  cleanup:
+    name: 🧹 Cleanup Artifacts
+    runs-on: ubuntu-latest
+    needs: [playwright, cypress]
+    if: always()
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🗑️ Cleanup old artifacts
+        run: npm run cleanup:artifacts 20
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

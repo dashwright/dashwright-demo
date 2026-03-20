@@ -46,3 +46,27 @@ test-reports/
 
 - Push to `main` triggers all tests automatically
 - Manual run via GitHub Actions "Workflow dispatch"
+
+## Artifact Cleanup
+
+Clean up old GitHub Actions artifacts to save storage space:
+
+```bash
+# Keep only the 5 most recent artifacts
+npm run cleanup:artifacts 5
+
+# Or run directly
+node scripts/cleanup-artifacts.js 5
+```
+
+**Requirements:**
+- `GITHUB_TOKEN` environment variable with repo permissions
+- Repository format: `owner/repo` (auto-detected in CI via `GITHUB_REPOSITORY`)
+
+**Usage in CI:**
+```yaml
+- name: 🧹 Cleanup old artifacts
+  run: npm run cleanup:artifacts 10
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```

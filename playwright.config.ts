@@ -8,6 +8,10 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['html', { outputFolder: 'test-reports/playwright-report', open: 'never' }],
+    ['monocart-reporter', {
+      name: 'DashWright Report',
+      outputFile: 'test-reports/monocart/index.html'
+    }],
     ['list'],
     ['playwright-ctrf-json-reporter', { outputDir: 'test-reports/ctrf' }]
   ],

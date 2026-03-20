@@ -49,6 +49,14 @@ jobs:
           path: test-reports/playwright-report/
           retention-days: 30
 
+      - name: 📤 Upload monocart Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monocart-report
+          path: test-reports/monocart/
+          retention-days: 30
+
   cypress:
     name: 🔷 Cypress (JavaScript)
     timeout-minutes: 60

@@ -26,6 +26,7 @@
     "cross-env": "^10.1.0",
     "cypress": "^15.12.0",
     "mocha-junit-reporter": "^2.2.1",
+    "monocart-reporter": "^2.10.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {

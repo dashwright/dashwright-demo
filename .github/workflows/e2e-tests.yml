@@ -62,6 +62,9 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci --legacy-peer-deps
 
+      - name: 🌐 Install ChromeDriver
+        run: npx playwright install chromium
+
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/wdio-report
 
@@ -139,6 +142,9 @@ jobs:
 
       - name: 📦 Install dependencies
         run: npm ci --legacy-peer-deps
+
+      - name: 🌐 Install ChromeDriver
+        run: npx playwright install chromium
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/selenium-report

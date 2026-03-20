@@ -74,11 +74,11 @@ async function runTests() {
   let driver;
   
   try {
-    const chromePath = await pwChromium.executablePath();
-    const builder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(chromeOptions())
-      .setChromeService(new chrome.ServiceBuilder(chromePath));
+    const builder = new Builder().forBrowser('chrome').setChromeOptions(chromeOptions());
+    try {
+      const chromePath = await pwChromium.executablePath();
+      builder.setChromeService(new chrome.ServiceBuilder(chromePath));
+    } catch (e) {}
     driver = await builder.build();
     console.log('🧪 Swag Login - Selenium Tests\n');
 

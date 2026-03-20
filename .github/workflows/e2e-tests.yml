@@ -171,7 +171,9 @@ jobs:
         run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
-        run: CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
+        run: |
+          CHROME_BIN=$(find /root/.cache/ms-playwright -name chrome -type f 2>/dev/null | head -1)
+          npm run test:selenium
 
       - name: 📤 Upload Selenium report
         uses: actions/upload-artifact@v4

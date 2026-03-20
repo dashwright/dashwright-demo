@@ -151,10 +151,7 @@ jobs:
         run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
-        run: |
-          export CHROME_BIN=$(which chromium)
-          echo "Using Chrome: $CHROME_BIN"
-          node tests/selenium/swag-login.spec.js
+        run: node tests/selenium/swag-login.spec.js
 
       - name: 📤 Upload Selenium report
         uses: actions/upload-artifact@v4

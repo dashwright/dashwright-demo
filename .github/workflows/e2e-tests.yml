@@ -141,16 +141,16 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: 🌐 Install Chromium & ChromeDriver
+      - name: 🌐 Install Browser for Selenium
         run: |
-          apt-get update && apt-get install -y chromium chromium-driver
-          npm install -D chromedriver
+          apt-get update && apt-get install -y xvfb chromium
+          npx playwright install chromium
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
-        run: node tests/selenium/swag-login.spec.js
+        run: xvfb-run node tests/selenium/swag-login.spec.js
 
       - name: 📤 Upload Selenium report
         uses: actions/upload-artifact@v4

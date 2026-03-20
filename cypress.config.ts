@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+import * as fs from 'fs';
 
 export default defineConfig({
   e2e: {
@@ -13,7 +14,13 @@ export default defineConfig({
       reportDir: 'test-reports/cypress-report',
       overwrite: true,
       html: true,
-      json: true
+      json: false
+    },
+    setupNodeEvents: () => {
+      const jsonPath = 'test-reports/cypress-report/mochawesome.json';
+      if (fs.existsSync(jsonPath)) {
+        fs.unlinkSync(jsonPath);
+      }
     },
   },
 });

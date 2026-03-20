@@ -1,8 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 const BASE_URL = 'https://www.saucedemo.com';
 
-async function login(page, username, password) {
+interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+async function login(page: Page, username: string, password: string): Promise<void> {
   await page.fill('[id="user-name"]', username);
   await page.fill('[id="password"]', password);
   await page.click('[id="login-button"]');

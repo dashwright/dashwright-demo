@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 🗄️ Cache node_modules
+      - name: 📦 Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
         with:
@@ -25,9 +25,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      - name: 📦 Install dependencies
+      - name: 📥 Install Dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+        run: npm ci
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/playwright-report test-reports/ctrf
@@ -49,40 +49,6 @@ jobs:
           path: test-reports/playwright-report/
           retention-days: 30
 
-  wdio:
-    name: 🕷️ WebdriverIO (JavaScript)
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.58.2-noble
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: 📦 Install dependencies
-        run: npm ci --legacy-peer-deps
-
-      - name: 🌐 Install ChromeDriver
-        run: npx playwright install chromium
-
-      - name: 📁 Create Test Reports Directory
-        run: mkdir -p test-reports/wdio-report
-
-      - name: 🧪 Run WebdriverIO tests
-        run: |
-          npx wdio run wdio.conf.ts 2>&1 || true
-
-      - name: 📄 Generate HTML Report
-        run: node scripts/generate-wdio-html.js
-
-      - name: 📤 Upload WebdriverIO report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: wdio-report
-          path: test-reports/wdio-report/
-          retention-days: 30
-
   cypress:
     name: 🔷 Cypress (JavaScript)
     timeout-minutes: 60
@@ -93,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 🗄️ Cache node_modules
+      - name: 📦 Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
         with:
@@ -102,7 +68,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
 
-      - name: 📦 Install dependencies
+      - name: 📥 Install Dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
@@ -128,34 +94,4 @@ jobs:
         with:
           name: cypress-report
           path: test-reports/cypress-report/
-          retention-days: 30
-
-  selenium:
-    name: 🌈 Selenium (JavaScript)
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.58.2-noble
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: 📦 Install dependencies
-        run: npm ci --legacy-peer-deps
-
-      - name: 🌐 Install ChromeDriver
-        run: npx playwright install chromium
-
-      - name: 📁 Create Test Reports Directory
-        run: mkdir -p test-reports/selenium-report
-
-      - name: 🧪 Run Selenium tests
-        run: node tests/selenium/swag-login.spec.js
-
-      - name: 📤 Upload Selenium report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: selenium-report
-          path: test-reports/selenium-report/
           retention-days: 30

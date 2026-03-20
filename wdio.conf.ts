@@ -4,9 +4,6 @@ export const config = {
   exclude: [],
   capabilities: [{
     browserName: 'chromium',
-    'goog:chromeOptions': {
-      args: ['--no-sandbox'],
-    },
   }],
   logLevel: 'silent',
   baseUrl: 'https://www.saucedemo.com',

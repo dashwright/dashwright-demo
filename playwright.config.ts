@@ -10,10 +10,10 @@ export default defineConfig({
     ['html', { outputFolder: 'test-reports/playwright-report', open: 'never' }],
     ['monocart-reporter', {
       name: 'DashWright Report',
-      outputFile: 'test-reports/monocart/index.html'
+      outputFile: 'test-reports/monocart-report/index.html'
     }],
     ['list'],
-    ['playwright-ctrf-json-reporter', { outputDir: 'test-reports/ctrf' }]
+    ['playwright-ctrf-json-reporter', { outputDir: 'test-reports/ctrf-report' }]
   ],
   use: {
     trace: 'on-first-retry',

@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: 📁 Create Test Reports Directory
-        run: mkdir -p test-reports/playwright-report test-reports/ctrf
+        run: mkdir -p test-reports/playwright-report test-reports/ctrf-report test-reports/monocart-report
 
       - name: 🧪 Run Playwright tests
         run: npx playwright test
@@ -39,13 +39,13 @@ jobs:
         uses: ctrf-io/github-actions-test-reporter@v1
         if: always()
         with:
-          report-path: test-reports/ctrf/*.json
+          report-path: test-reports/ctrf-report/*.json
 
       - name: 📤 Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright
           path: test-reports/playwright-report/
           retention-days: 30
 
@@ -53,8 +53,8 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: monocart-report
-          path: test-reports/monocart/
+          name: monocart
+          path: test-reports/monocart-report/
           retention-days: 30
 
   cypress:
@@ -100,6 +100,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-report
+          name: cypress
           path: test-reports/cypress-report/
           retention-days: 30

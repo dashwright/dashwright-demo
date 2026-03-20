@@ -66,7 +66,7 @@ jobs:
         id: npm-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-wdio-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-wdio-v8-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-wdio-
 
@@ -166,14 +166,17 @@ jobs:
         run: |
           npx playwright install chromium
           npm install -D chromedriver
+          which chromedriver || true
+          ls /root/.cache/ms-playwright/ || true
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
         run: |
-          CHROME_BIN=$(find /root/.cache/ms-playwright -name chrome -type f 2>/dev/null | head -1)
-          npm run test:selenium
+          export CHROME_BIN=$(find /root/.cache/ms-playwright -name chrome -type f 2>/dev/null | head -1)
+          echo "Using Chrome: $CHROME_BIN"
+          node tests/selenium/swag-login.spec.js
 
       - name: 📤 Upload Selenium report
         uses: actions/upload-artifact@v4

@@ -61,18 +61,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 🗄️ Cache node_modules
-        uses: actions/cache@v4
-        id: npm-cache
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-wdio-v8-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-wdio-
-
       - name: 📦 Install dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
       - name: 🌐 Install Chromium browser
         run: npx playwright install chromium
@@ -149,18 +139,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 🗄️ Cache node_modules
-        uses: actions/cache@v4
-        id: npm-cache
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-selenium-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-selenium-
-
       - name: 📦 Install dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
       - name: 🌐 Install Chromium & ChromeDriver
         run: |

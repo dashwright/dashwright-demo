@@ -1,7 +1,11 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const fs = require('fs');
+const path = require('path');
 
 const BASE_URL = 'https://www.saucedemo.com';
+const REPORT_DIR = path.join(__dirname, '../../test-reports/selenium-report');
+const testResults = [];
 
 const chromeOptions = () => {
   const options = new chrome.Options();
@@ -83,9 +87,13 @@ async function runTests() {
       await login(driver, 'standard_user', 'secret_sauce');
       if ((await driver.getCurrentUrl()).includes('inventory.html')) {
         console.log('✓ Valid Login - Standard User');
+        testResults.push({ name: 'Valid Login - Standard User', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Standard User: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Standard User: ${e.message}`); 
+      testResults.push({ name: 'Valid Login - Standard User', status: 'failed', error: e.message });
+    }
 
     // Test 2: Invalid Login - Locked Out User
     try {
@@ -93,9 +101,13 @@ async function runTests() {
       const t = await getErrorMessage(driver);
       if (t && t.includes('locked out')) {
         console.log('✓ Invalid Login - Locked Out User');
+        testResults.push({ name: 'Invalid Login - Locked Out User', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Locked Out: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Locked Out: ${e.message}`); 
+      testResults.push({ name: 'Invalid Login - Locked Out User', status: 'failed', error: e.message });
+    }
 
     // Test 3: Invalid Login - Wrong username
     try {
@@ -103,9 +115,13 @@ async function runTests() {
       const t = await getErrorMessage(driver);
       if (t && t.includes('do not match')) {
         console.log('✓ Invalid Login - Wrong username');
+        testResults.push({ name: 'Invalid Login - Wrong username', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Wrong username: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Wrong username: ${e.message}`); 
+      testResults.push({ name: 'Invalid Login - Wrong username', status: 'failed', error: e.message });
+    }
 
     // Test 4: Invalid Login - Wrong password
     try {
@@ -113,9 +129,13 @@ async function runTests() {
       const t = await getErrorMessage(driver);
       if (t && t.includes('do not match')) {
         console.log('✓ Invalid Login - Wrong password');
+        testResults.push({ name: 'Invalid Login - Wrong password', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Wrong password: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Wrong password: ${e.message}`); 
+      testResults.push({ name: 'Invalid Login - Wrong password', status: 'failed', error: e.message });
+    }
 
     // Test 5: Invalid Login - Empty username
     try {
@@ -123,9 +143,13 @@ async function runTests() {
       const t = await getErrorMessage(driver);
       if (t && t.includes('Username is required')) {
         console.log('✓ Invalid Login - Empty username');
+        testResults.push({ name: 'Invalid Login - Empty username', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Empty username: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Empty username: ${e.message}`); 
+      testResults.push({ name: 'Invalid Login - Empty username', status: 'failed', error: e.message });
+    }
 
     // Test 6: Invalid Login - Empty password
     try {
@@ -133,18 +157,26 @@ async function runTests() {
       const t = await getErrorMessage(driver);
       if (t && t.includes('Password is required')) {
         console.log('✓ Invalid Login - Empty password');
+        testResults.push({ name: 'Invalid Login - Empty password', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Empty password: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Empty password: ${e.message}`); 
+      testResults.push({ name: 'Invalid Login - Empty password', status: 'failed', error: e.message });
+    }
 
     // Test 7: Valid Login - Problem User
     try {
       await login(driver, 'problem_user', 'secret_sauce');
       if ((await driver.getCurrentUrl()).includes('inventory.html')) {
         console.log('✓ Valid Login - Problem User');
+        testResults.push({ name: 'Valid Login - Problem User', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Problem User: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Problem User: ${e.message}`); 
+      testResults.push({ name: 'Valid Login - Problem User', status: 'failed', error: e.message });
+    }
 
     // Test 8: Valid Login - Performance Glitch User
     try {
@@ -152,33 +184,59 @@ async function runTests() {
       await driver.sleep(5000);
       if ((await driver.getCurrentUrl()).includes('inventory.html')) {
         console.log('✓ Valid Login - Performance Glitch User');
+        testResults.push({ name: 'Valid Login - Performance Glitch User', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Performance Glitch: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Performance Glitch: ${e.message}`); 
+      testResults.push({ name: 'Valid Login - Performance Glitch User', status: 'failed', error: e.message });
+    }
 
     // Test 9: Valid Login - Error User
     try {
       await login(driver, 'error_user', 'secret_sauce');
       if ((await driver.getCurrentUrl()).includes('inventory.html')) {
         console.log('✓ Valid Login - Error User');
+        testResults.push({ name: 'Valid Login - Error User', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Error User: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Error User: ${e.message}`); 
+      testResults.push({ name: 'Valid Login - Error User', status: 'failed', error: e.message });
+    }
 
     // Test 10: Valid Login - Visual User
     try {
       await login(driver, 'visual_user', 'secret_sauce');
       if ((await driver.getCurrentUrl()).includes('inventory.html')) {
         console.log('✓ Valid Login - Visual User');
+        testResults.push({ name: 'Valid Login - Visual User', status: 'passed' });
         passed++;
       }
-    } catch (e) { console.log(`  ⚠️ Visual User: ${e.message}`); }
+    } catch (e) { 
+      console.log(`  ⚠️ Visual User: ${e.message}`); 
+      testResults.push({ name: 'Valid Login - Visual User', status: 'failed', error: e.message });
+    }
 
     console.log(`\n✅ ${passed}/10 passing`);
     console.log('\nSpec Files: 1 passed, 1 total (100% completed)');
 
+    if (!fs.existsSync(REPORT_DIR)) {
+      fs.mkdirSync(REPORT_DIR, { recursive: true });
+    }
+    const report = {
+      timestamp: new Date().toISOString(),
+      summary: { passed, failed: 10 - passed, total: 10 },
+      tests: testResults
+    };
+    fs.writeFileSync(path.join(REPORT_DIR, 'results.json'), JSON.stringify(report, null, 2));
+
   } catch (error) {
     console.error('❌ Test failed:', error.message);
+    if (!fs.existsSync(REPORT_DIR)) {
+      fs.mkdirSync(REPORT_DIR, { recursive: true });
+    }
+    fs.writeFileSync(path.join(REPORT_DIR, 'results.json'), JSON.stringify({ error: error.message }, null, 2));
   } finally {
     if (driver) {
       try { await driver.quit(); } catch {}

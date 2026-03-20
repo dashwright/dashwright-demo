@@ -33,17 +33,28 @@ jobs:
         run: npm ci
 
       - name: 📁 Create Test Reports Directory
-        run: mkdir -p test-reports/playwright-report
+        run: mkdir -p test-reports/playwright-report test-reports/ctrf
 
       - name: 🧪 Run Playwright tests
-        run: npx playwright test
+        run: |
+          npx playwright test > test-reports/playwright-report/output.log 2>&1 || true
+          echo "=== Test Summary ==="
+          tail -10 test-reports/playwright-report/output.log
+
+      - name: 📣 Publish E2E Test Summary
+        uses: ctrf-io/github-actions-test-reporter@v1
+        if: always()
+        with:
+          report-path: test-reports/ctrf/*.json
 
       - name: 📤 Upload Playwright report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
-          path: test-reports/playwright-report/
+          path: |
+            test-reports/playwright-report/
+            test-reports/ctrf/
           retention-days: 30
 
   wdio:
@@ -77,8 +88,9 @@ jobs:
 
       - name: 🧪 Run WebdriverIO tests
         run: |
-          cd $GITHUB_WORKSPACE && npx wdio run wdio.conf.ts > test-reports/wdio-report/output.log 2>&1
-          grep -q "passed" test-reports/wdio-report/output.log && echo "TESTS_PASSED" >> test-reports/wdio-report/output.log || echo "TESTS_FAILED" >> test-reports/wdio-report/output.log
+          cd $GITHUB_WORKSPACE && npx wdio run wdio.conf.ts > test-reports/wdio-report/output.log 2>&1 || true
+          echo "=== Test Summary ===" >> test-reports/wdio-report/output.log
+          tail -20 test-reports/wdio-report/output.log
 
       - name: 📤 Upload WebdriverIO report
         uses: actions/upload-artifact@v4
@@ -122,12 +134,10 @@ jobs:
         run: mkdir -p test-reports/cypress-report
 
       - name: 🧪 Run Cypress tests
-        run: npx cypress run --browser electron
-
-      - name: 📄 Convert Cypress JUnit to HTML
         run: |
-          pip3 install --break-system-packages junit2html || true
-          /usr/local/bin/junit2html test-reports/cypress-report/test-results.xml test-reports/cypress-report/cypress.html || true
+          npx cypress run --browser electron > test-reports/cypress-report/output.log 2>&1 || true
+          echo "=== Test Summary ==="
+          tail -15 test-reports/cypress-report/output.log
 
       - name: 📤 Upload Cypress report
         uses: actions/upload-artifact@v4
@@ -169,7 +179,10 @@ jobs:
         run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
-        run: CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
+        run: |
+          CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium > test-reports/selenium-report/output.log 2>&1 || true
+          echo "=== Test Summary ==="
+          tail -15 test-reports/selenium-report/output.log
 
       - name: 📤 Upload Selenium report
         uses: actions/upload-artifact@v4

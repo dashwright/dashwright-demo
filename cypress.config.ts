@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress';
 import * as fs from 'fs';
+import { execSync } from 'child_process';
 
 export default defineConfig({
   e2e: {
@@ -9,18 +10,11 @@ export default defineConfig({
     video: false,
     screenshotOnRunFailure: true,
     screenshotsFolder: 'test-reports/cypress-report/screenshots',
-    reporter: 'mochawesome',
+    reporter: 'mocha-junit-reporter',
     reporterOptions: {
-      reportDir: 'test-reports/cypress-report',
-      overwrite: true,
-      html: true,
-      json: false
+      mochaFile: 'test-reports/cypress-report/test-results.xml',
+      toConsole: true
     },
-    setupNodeEvents: () => {
-      const jsonPath = 'test-reports/cypress-report/mochawesome.json';
-      if (fs.existsSync(jsonPath)) {
-        fs.unlinkSync(jsonPath);
-      }
-    },
+    setupNodeEvents: () => {},
   },
 });

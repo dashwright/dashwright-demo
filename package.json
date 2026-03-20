@@ -7,7 +7,7 @@
     "test": "playwright test",
     "test:playwright": "playwright test",
     "test:wdio": "wdio run wdio.conf.ts",
-    "test:cypress": "cypress run --browser chrome",
+    "test:cypress": "cypress run --browser chrome && node scripts/generate-cypress-html.js",
     "test:selenium": "node tests/selenium/swag-login.spec.js"
   },
   "repository": {
@@ -31,9 +31,7 @@
     "chromedriver": "^146.0.5",
     "cross-env": "^10.1.0",
     "cypress": "^15.12.0",
-    "cypress-html-reporter": "^11.0.0",
     "mocha-junit-reporter": "^2.2.1",
-    "mochawesome": "^7.1.4",
     "selenium-webdriver": "^4.41.0",
     "typescript": "^5.9.3"
   },

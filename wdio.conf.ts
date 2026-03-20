@@ -1,6 +1,4 @@
-import type { Options } from 'webdriver';
-
-export const config: Options.Testrunner = {
+export const config = {
   runner: 'local',
   specs: ['./tests/wdio/specs/**/*.ts'],
   exclude: [],

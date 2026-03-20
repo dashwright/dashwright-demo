@@ -71,13 +71,9 @@ async function getErrorMessage(driver) {
 
 async function runTests() {
   let driver;
-  const chromePath = process.env.CHROME_BIN || '/usr/bin/chromium';
   
   try {
     const builder = new Builder().forBrowser('chrome').setChromeOptions(chromeOptions());
-    try {
-      builder.setChromeService(new chrome.ServiceBuilder(chromePath));
-    } catch (e) {}
     driver = await builder.build();
     console.log('🧪 Swag Login - Selenium Tests\n');
 

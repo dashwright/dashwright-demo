@@ -1,5 +1,6 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const { chromium: pwChromium } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
@@ -73,7 +74,11 @@ async function runTests() {
   let driver;
   
   try {
-    const builder = new Builder().forBrowser('chrome').setChromeOptions(chromeOptions());
+    const chromePath = await pwChromium.executablePath();
+    const builder = new Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(chromeOptions())
+      .setChromeService(new chrome.ServiceBuilder(chromePath));
     driver = await builder.build();
     console.log('🧪 Swag Login - Selenium Tests\n');
 

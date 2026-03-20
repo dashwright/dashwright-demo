@@ -36,10 +36,7 @@ jobs:
         run: mkdir -p test-reports/playwright-report test-reports/ctrf
 
       - name: 🧪 Run Playwright tests
-        run: |
-          npx playwright test > test-reports/playwright-report/output.log 2>&1 || true
-          echo "=== Test Summary ==="
-          tail -10 test-reports/playwright-report/output.log
+        run: npx playwright test
 
       - name: 📣 Publish E2E Test Summary
         uses: ctrf-io/github-actions-test-reporter@v1
@@ -87,10 +84,7 @@ jobs:
         run: mkdir -p test-reports/wdio-report
 
       - name: 🧪 Run WebdriverIO tests
-        run: |
-          cd $GITHUB_WORKSPACE && npx wdio run wdio.conf.ts > test-reports/wdio-report/output.log 2>&1 || true
-          echo "=== Test Summary ===" >> test-reports/wdio-report/output.log
-          tail -20 test-reports/wdio-report/output.log
+        run: cd $GITHUB_WORKSPACE && npx wdio run wdio.conf.ts || true
 
       - name: 📤 Upload WebdriverIO report
         uses: actions/upload-artifact@v4
@@ -134,10 +128,7 @@ jobs:
         run: mkdir -p test-reports/cypress-report
 
       - name: 🧪 Run Cypress tests
-        run: |
-          npx cypress run --browser electron > test-reports/cypress-report/output.log 2>&1 || true
-          echo "=== Test Summary ==="
-          tail -15 test-reports/cypress-report/output.log
+        run: npx cypress run --browser electron
 
       - name: 📤 Upload Cypress report
         uses: actions/upload-artifact@v4
@@ -179,10 +170,7 @@ jobs:
         run: mkdir -p test-reports/selenium-report
 
       - name: 🧪 Run Selenium tests
-        run: |
-          CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium > test-reports/selenium-report/output.log 2>&1 || true
-          echo "=== Test Summary ==="
-          tail -15 test-reports/selenium-report/output.log
+        run: CHROME_BIN=/root/.cache/ms-playwright/chromium-*/chrome-linux/chrome npm run test:selenium
 
       - name: 📤 Upload Selenium report
         uses: actions/upload-artifact@v4

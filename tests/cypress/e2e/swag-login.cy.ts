@@ -1,7 +1,12 @@
+const USERNAME_SELECTOR = '#user-name';
+const PASSWORD_SELECTOR = '#password';
+const LOGIN_BUTTON_SELECTOR = '#login-button';
+const ERROR_MESSAGE_SELECTOR = '[data-test="error"]';
+
 function login(username, password) {
-  if (username) cy.get('#user-name').type(username);
-  if (password) cy.get('#password').type(password);
-  cy.get('#login-button').click();
+  if (username) cy.get(USERNAME_SELECTOR).type(username);
+  if (password) cy.get(PASSWORD_SELECTOR).type(password);
+  cy.get(LOGIN_BUTTON_SELECTOR).click();
 }
 
 describe('Swag Login - Cypress', () => {
@@ -16,27 +21,27 @@ describe('Swag Login - Cypress', () => {
 
   it('Invalid Login - Locked Out User', () => {
     login('locked_out_user', 'secret_sauce');
-    cy.get('[data-test="error"]').should('contain.text', 'locked out');
+    cy.get(ERROR_MESSAGE_SELECTOR).should('contain.text', 'locked out');
   });
 
   it('Invalid Login - Wrong username', () => {
     login('wrong_username', 'secret_sauce');
-    cy.get('[data-test="error"]').should('contain.text', 'Username and password do not match');
+    cy.get(ERROR_MESSAGE_SELECTOR).should('contain.text', 'Username and password do not match');
   });
 
   it('Invalid Login - Wrong password', () => {
     login('standard_user', 'wrong_password');
-    cy.get('[data-test="error"]').should('contain.text', 'Username and password do not match');
+    cy.get(ERROR_MESSAGE_SELECTOR).should('contain.text', 'Username and password do not match');
   });
 
   it('Invalid Login - Empty username', () => {
     login('', 'secret_sauce');
-    cy.get('[data-test="error"]').should('contain.text', 'Username is required');
+    cy.get(ERROR_MESSAGE_SELECTOR).should('contain.text', 'Username is required');
   });
 
   it('Invalid Login - Empty password', () => {
     login('standard_user', '');
-    cy.get('[data-test="error"]').should('contain.text', 'Password is required');
+    cy.get(ERROR_MESSAGE_SELECTOR).should('contain.text', 'Password is required');
   });
 
   it('Valid Login - Problem User', () => {

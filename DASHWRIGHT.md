@@ -9,8 +9,10 @@
 3. Enter:
    - **Owner:** `dashwright`
    - **Repo:** `dashwright-demo`
-   - **Report, anyone or all:** `playwright, monocart, cypress`
-4. Click **Generate** to see your dashboard!
+   - **Artifact Names, one or all:** `playwright, monocart, cypress`
+4. Select **Runs Per Branch**
+5. Select **Design**
+6. Click **Generate** to see your dashboard!
 
 ## What's Inside
 

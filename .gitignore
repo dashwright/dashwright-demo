@@ -5,3 +5,4 @@ test-results/
 .playwright/
 *.log
 .DS_Store
+.aider*

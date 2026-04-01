@@ -102,7 +102,7 @@ jobs:
         with:
           name: cypress
           path: test-reports/cypress-report/
-          retention-days: 30
+          retention-days: 365
 
   cleanup:
     name: 🧹 Cleanup Artifacts

@@ -3,9 +3,17 @@ const PASSWORD_SELECTOR = '#password';
 const LOGIN_BUTTON_SELECTOR = '#login-button';
 const ERROR_MESSAGE_SELECTOR = '[data-test="error"]';
 
-function login(username, password) {
-  cy.get(USERNAME_SELECTOR).type(username);
-  cy.get(PASSWORD_SELECTOR).type(password);
+function login(username: string, password: string) {
+  const usernameInput = cy.get(USERNAME_SELECTOR).clear();
+  if (username.length > 0) {
+    usernameInput.type(username);
+  }
+
+  const passwordInput = cy.get(PASSWORD_SELECTOR).clear();
+  if (password.length > 0) {
+    passwordInput.type(password);
+  }
+
   cy.get(LOGIN_BUTTON_SELECTOR).click();
 }
 

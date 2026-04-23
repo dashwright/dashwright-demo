@@ -6,14 +6,14 @@
 
 1. Go to **[dashwright.com](https://dashwright.com)**
 2. Click on 'Launch Dashboard with GitHub' to connect with your github account
-3. You sould be on https://dashwright.com/dashboard/
-4. On the sidebar input/select the following for GitHub tab,
-   - **Repository** `dashwright/dashwright-demo`
+3. You should be on https://dashwright.com/dashboard/ (Manually navigate to if you are not)
+4. GitHub tab on the sidebar, input/select the following,
+   - **Repository:** `dashwright/dashwright-demo`
    - **Artifact Names, one or all:** `playwright, monocart, cypress`
    - **Runs Per Branch**
-   - **Design** - Default is Corporate for free users. Select if not already
+   - **Design:** Default is Corporate for free users. Select if not already
 5. Click **Generate** to see your dashboard!
-6. **Azure DevOps** - Once you sign in with your GitHub account, you can connect with your org PAT(readonly). That will pull all your owner/project/pipelines so you can select in the **Repository** input. (PAT is only stored on your localStorage).
+6. **Azure DevOps:** - Once you sign in with your GitHub account, you can connect with your org PAT(readonly). That will pull all your owner/project/pipelines so you can select in the **Repository** input. (PAT is only stored on your localStorage).
 
 ## What's Inside
 

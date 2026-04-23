@@ -4,8 +4,8 @@
 
 ## Try DashWright Now
 
-1. Go to **[dashwright.com](https://dashwright.com)**
-2. Click on 'Launch Dashboard with GitHub' to connect with your github account
+1. Visti **[dashwright.com](https://dashwright.com)**
+2. Click on the 'Launch Dashboard with GitHub' button to connect with your github account
 3. You should be on https://dashwright.com/dashboard/ (Manually navigate to if you are not)
 4. GitHub tab on the sidebar, input/select the following,
    - **Repository:** `dashwright/dashwright-demo`

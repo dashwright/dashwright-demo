@@ -57,14 +57,15 @@ cypress:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_PIPELINE_SOURCE == "web"
 
-# 🧹 Cleanup Artifacts
-cleanup:
-  stage: cleanup
-  image: node:24-bookworm
-  needs: ["playwright", "cypress"]
-  when: always
-  script:
-    - npm ci
-    - npm run cleanup:gitlab-artifacts 20
-  variables:
-    GITLAB_TOKEN: $GITLAB_TOKEN # Define this in Project Settings > CI/CD > Variables
+# 🧹 Cleanup Artifacts - TODO Later
+# cleanup:
+#   stage: cleanup
+#   when: manual
+#   image: node:24-bookworm
+#   needs: ["playwright", "cypress"]
+#   when: always
+#   script:
+#     - npm ci
+#     - npm run cleanup:gitlab-artifacts 20
+#   variables:
+#     GITLAB_TOKEN: $GITLAB_TOKEN # Define this in Project Settings > CI/CD > Variables

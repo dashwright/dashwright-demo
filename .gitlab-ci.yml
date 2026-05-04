@@ -65,6 +65,6 @@ cleanup:
   when: always
   script:
     - npm ci
-    - npm run cleanup:artifacts 20
+    - npm run cleanup:gitlab-artifacts 20
   variables:
     GITLAB_TOKEN: $GITLAB_TOKEN # Define this in Project Settings > CI/CD > Variables

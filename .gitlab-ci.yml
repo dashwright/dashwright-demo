@@ -1,0 +1,70 @@
+stages:
+  - test
+  - cleanup
+
+# Global Cache Configuration
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+
+# 🎭 Playwright (TypeScript) Job
+playwright:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.58.2-noble
+  timeout: 60 minutes
+  script:
+    - npm ci
+    - mkdir -p test-reports/playwright-report test-reports/ctrf-report test-reports/monocart-report
+    - npx playwright test
+    # Note: CTRF reporting usually has a GitLab-specific CLI or you can just store the JSON
+  artifacts:
+    when: always
+    name: "playwright-report"
+    paths:
+      - test-reports/playwright-report/
+      - test-reports/ctrf-report/
+      - test-reports/monocart-report/
+    expire_in: 30 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web" # This is your 'workflow_dispatch'
+
+# 🔷 Cypress (JavaScript) Job
+cypress:
+  stage: test
+  image: node:24-bookworm
+  timeout: 60 minutes
+  before_script:
+    - apt-get update && apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth python3 python3-pip
+    - npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+    - npx cypress install
+  script:
+    - mkdir -p test-reports/cypress-report
+    - npx cypress run --browser electron
+    - node scripts/generate-cypress-html.js
+  artifacts:
+    when: always
+    name: "cypress-report"
+    paths:
+      - test-reports/cypress-report/
+    expire_in: 180 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+# 🧹 Cleanup Artifacts
+cleanup:
+  stage: cleanup
+  image: node:24-bookworm
+  needs: ["playwright", "cypress"]
+  when: always
+  script:
+    - npm ci
+    - npm run cleanup:artifacts 20
+  variables:
+    GITLAB_TOKEN: $GITLAB_TOKEN # Define this in Project Settings > CI/CD > Variables

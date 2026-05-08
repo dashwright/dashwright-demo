@@ -1,6 +1,6 @@
 stages:
   - test
-  - cleanup
+  # - cleanup
 
 # Global Cache Configuration
 cache:
@@ -28,9 +28,9 @@ playwright:
       - test-reports/monocart-report/
     expire_in: 30 days
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "dev")
     - if: $CI_PIPELINE_SOURCE == "schedule"
-    - if: $CI_PIPELINE_SOURCE == "web" # This is your 'workflow_dispatch'
+    - if: $CI_PIPELINE_SOURCE == "web" # 'workflow_dispatch'
 
 # 🔷 Cypress (JavaScript) Job
 cypress:
@@ -52,7 +52,7 @@ cypress:
       - test-reports/cypress-report/
     expire_in: 180 days
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "dev")
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_PIPELINE_SOURCE == "web"
 

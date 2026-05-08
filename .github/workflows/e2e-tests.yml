@@ -4,7 +4,9 @@ on:
   schedule:
     - cron: "0 0 * * 0" # Every Sunday at midnight
   push:
-    branches: [main, dev]
+    branches:
+      - main
+      - dev
 
   workflow_dispatch:
 

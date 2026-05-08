@@ -17,7 +17,7 @@ playwright:
   timeout: 60 minutes
   script:
     - npm ci
-    - mkdir -p test-reports/playwright-report test-reports/ctrf-report test-reports/monocart-report
+    - mkdir -p test-reports/playwright-report test-reports/monocart-report
     - npx playwright test
     # Note: CTRF reporting usually has a GitLab-specific CLI or you can just store the JSON
   artifacts:
@@ -25,7 +25,6 @@ playwright:
     name: "playwright-report"
     paths:
       - test-reports/playwright-report/
-      - test-reports/ctrf-report/
       - test-reports/monocart-report/
     expire_in: 30 days
   rules:

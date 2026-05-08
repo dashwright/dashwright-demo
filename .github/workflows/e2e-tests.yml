@@ -2,9 +2,10 @@ name: 🚀 E2E Tests
 
 on:
   schedule:
-    - cron: '0 0 * * 0' # Every Sunday at midnight
+    - cron: "0 0 * * 0" # Every Sunday at midnight
   push:
-    branches: [main]
+    branches: [main, dev]
+
   workflow_dispatch:
 
 jobs:

@@ -17,24 +17,24 @@ export default defineConfig({
   testDir: "./tests/playwright",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 0 : 0,
   workers: process.env.CI ? 1 : undefined,
 
   // Combined reporters: the Dashwright reporter + existing helpful reporters
   reporter: [
-    [
-      "@dashwright/playwright-reporter",
-      {
-        apiUrl: DASHWRIGHT_API_URL,
-        apiToken: DASHWRIGHT_API_TOKEN,
-        organizationId: DASHWRIGHT_ORG_ID,
-        uploadScreenshots: true,
-        uploadVideos: true,
-        uploadTraces: true,
-        retryAttempts: 3,
-        retryDelay: 1000,
-      },
-    ],
+    // [
+    //   "@dashwright/playwright-reporter",
+    //   {
+    //     apiUrl: DASHWRIGHT_API_URL,
+    //     apiToken: DASHWRIGHT_API_TOKEN,
+    //     organizationId: DASHWRIGHT_ORG_ID,
+    //     uploadScreenshots: true,
+    //     uploadVideos: true,
+    //     uploadTraces: true,
+    //     retryAttempts: 3,
+    //     retryDelay: 1000,
+    //   },
+    // ],
     ["html", { outputFolder: "test-reports/playwright-report", open: "never" }],
     [
       "monocart-reporter",
@@ -44,7 +44,10 @@ export default defineConfig({
       },
     ],
     ["list"],
-    ["playwright-ctrf-json-reporter", { outputDir: "test-reports/ctrf-report" }],
+    [
+      "playwright-ctrf-json-reporter",
+      { outputDir: "test-reports/ctrf-report" },
+    ],
   ],
 
   use: {

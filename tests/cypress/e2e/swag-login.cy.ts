@@ -82,4 +82,8 @@ describe('Swag Login - Cypress', () => {
     login('visual_user', 'secret_sauce');
     cy.url().should('include', 'inventory.html');
   });
+
+  it('intentional fail', () => {
+    throw new Error('Intentional failure for testing');
+  });
 });

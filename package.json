@@ -7,8 +7,7 @@
     "test": "playwright test",
     "test:playwright": "playwright test",
     "test:cypress": "cypress run --browser chrome --reporter mocha-junit-reporter --reporter-options \"mochaFile=test-reports/cypress-report/test-results.xml,toConsole=true\" && node scripts/generate-cypress-html.js",
-    "test:cypress:mochawesome": "cypress run --browser chrome --reporter mochawesome --reporter-options \"reportDir=test-reports/cypress-mochawesome,reportFilename=index,overwrite=true,html=true,json=true,quiet=true\"",
-    "test:cypress:both": "cypress run --browser chrome --reporter cypress-multi-reporters --reporter-options \"configFile=cypress/reporters/multi-reporters.json\" && node scripts/generate-cypress-html.js",
+    "test:cypress:mochawesome": "cypress run --browser chrome --reporter cypress-multi-reporters --reporter-options \"configFile=cypress/reporters/multi-reporters.json\"",
     "cleanup:artifacts": "node scripts/cleanup-artifacts.js",
     "cleanup:gitlab-artifacts": "node scripts/cleanup-gitlab-artifacts.js"
   },

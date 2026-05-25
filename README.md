@@ -27,14 +27,11 @@ pnpm run test:cypress
 pnpm exec cypress run --browser chrome
 
 # Cypress report modes
-# Existing simple HTML report
+# Simple custom HTML report + CI stats XML
 pnpm run test:cypress
 
-# Mochawesome only
+# Mochawesome HTML report + CI stats XML
 pnpm run test:cypress:mochawesome
-
-# Generate both reports in one run
-pnpm run test:cypress:both
 ```
 
 ## Test Site
@@ -48,7 +45,7 @@ All reports are saved in `test-reports/` folder:
 ```
 test-reports/
 ├── playwright-report/      # Playwright HTML report + CTRF JSON
-├── cypress-report/         # Existing Cypress custom HTML report
+├── cypress-report/         # JUnit XML + simple Cypress HTML report
 ├── cypress-mochawesome/    # Mochawesome HTML + JSON report
 └── ctrf/                   # CTRF JSON for GitHub integration
 ```

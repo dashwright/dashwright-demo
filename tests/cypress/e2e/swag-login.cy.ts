@@ -84,6 +84,6 @@ describe('Swag Login - Cypress', () => {
   });
 
   it('intentional fail', () => {
-    throw new Error('Intentional failure for testing');
+    cy.get(LOGIN_BUTTON_SELECTOR).should('contain.text', 'Sign In');
   });
 });

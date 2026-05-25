@@ -84,6 +84,9 @@ test.describe("Swag Login - Playwright", () => {
   });
 });
 
-test("intentional fail", async () => {
-  throw new Error("Intentional failure for testing");
+test("intentional fail", async ({ page }) => {
+  await page.goto(BASE_URL);
+  await expect(page.locator('[data-test="login-button"]')).toHaveText(
+    "Sign In",
+  );
 });

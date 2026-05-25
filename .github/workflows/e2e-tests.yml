@@ -97,7 +97,7 @@ jobs:
         run: pnpm exec cypress install
 
       - name: 📁 Create Test Reports Directory
-        run: mkdir -p test-reports/cypress-report test-reports/cypress-mochawesome
+        run: mkdir -p test-reports/cypress-report
 
       - name: 🧪 Run Cypress tests
         run: |
@@ -105,7 +105,7 @@ jobs:
           # npx cypress run --browser electron --reporter mocha-junit-reporter --reporter-options "mochaFile=test-reports/cypress-report/test-results.xml,toConsole=true"
           # node scripts/generate-cypress-html.js
           # mochaawesome
-          pnpm exec cypress run --browser electron --reporter cypress-multi-reporters --reporter-options "configFile=cypress/reporters/multi-reporters.json"
+          pnpm exec cypress run --browser electron --reporter mochawesome --reporter-options "reportDir=test-reports/cypress-report,reportFilename=index,overwrite=true,html=true,json=true,quiet=true"
 
       - name: 📤 Upload Cypress report
         uses: actions/upload-artifact@v4
@@ -113,8 +113,7 @@ jobs:
         with:
           name: cypress
           path: |
-            test-reports/cypress-report/test-results.xml
-            test-reports/cypress-mochawesome/
+            test-reports/cypress-report/
           retention-days: 180
 
   cleanup:

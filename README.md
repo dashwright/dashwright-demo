@@ -27,10 +27,10 @@ pnpm run test:cypress
 pnpm exec cypress run --browser chrome
 
 # Cypress report modes
-# Simple custom HTML report + CI stats XML
+# Simple custom HTML report + JUnit XML
 pnpm run test:cypress
 
-# Mochawesome HTML report + CI stats XML
+# Mochawesome HTML report
 pnpm run test:cypress:mochawesome
 ```
 

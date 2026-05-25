@@ -47,11 +47,11 @@ cypress:
   script:
     # simple report
     # - mkdir -p test-reports/cypress-report
-    # - npx cypress run --browser electron
+    # - npx cypress run --browser electron --reporter mocha-junit-reporter --reporter-options "mochaFile=test-reports/cypress-report/test-results.xml,toConsole=true"
     # - node scripts/generate-cypress-html.js
     # mochaawesome
     - mkdir -p test-reports/cypress-mochawesome
-    - pnpm run test:cypress:mochawesome
+    - pnpm exec cypress run --browser electron --reporter mochawesome --reporter-options "reportDir=test-reports/cypress-mochawesome,reportFilename=index,overwrite=true,html=true,json=true,quiet=true"
 
   artifacts:
     when: always

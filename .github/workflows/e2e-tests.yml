@@ -106,7 +106,7 @@ jobs:
           # npx cypress run --browser electron --reporter mocha-junit-reporter --reporter-options "mochaFile=test-reports/cypress-report/test-results.xml,toConsole=true"
           # node scripts/generate-cypress-html.js
           # mochaawesome
-          pnpm run test:cypress:mochawesome
+          pnpm exec cypress run --browser electron --reporter mochawesome --reporter-options "reportDir=test-reports/cypress-mochawesome,reportFilename=index,overwrite=true,html=true,json=true,quiet=true"
 
       - name: 📤 Upload Cypress report
         uses: actions/upload-artifact@v4

@@ -20,6 +20,12 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "packageManager": "pnpm@10.32.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "cypress"
+    ]
+  },
   "bugs": {
     "url": "https://github.com/dashwright/dashwright-demo/issues"
   },

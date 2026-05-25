@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable pnpm
+        run: corepack enable
+
       - name: 📦 Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
@@ -30,9 +33,7 @@ jobs:
 
       - name: 📥 Install Dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: 📁 Create Test Reports Directory
         run: mkdir -p test-reports/playwright-report test-reports/ctrf-report test-reports/monocart-report
@@ -72,6 +73,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable pnpm
+        run: corepack enable
+
       - name: 📦 Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
@@ -83,16 +87,14 @@ jobs:
 
       - name: 📥 Install Dependencies
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: 🖥️ Install Xvfb and Python for Cypress
         run: |
           apt-get update && apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth python3 python3-pip
 
       - name: 🌐 Install Cypress
-        run: npx cypress install
+        run: pnpm exec cypress install
 
       - name: 📁 Create Test Reports Directory
         # run: mkdir -p test-reports/cypress-report
@@ -125,10 +127,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable pnpm
+        run: corepack enable
+
       - name: 📦 Install Dependencies
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: 🗑️ Cleanup old artifacts
         run: pnpm run cleanup:artifacts 20

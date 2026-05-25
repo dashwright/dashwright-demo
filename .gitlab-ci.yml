@@ -43,7 +43,7 @@ cypress:
     - apt-get update && apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth python3 python3-pip
     - corepack enable
     - pnpm install --frozen-lockfile
-    - npx cypress install
+    - pnpm exec cypress install
   script:
     # simple report
     # - mkdir -p test-reports/cypress-report

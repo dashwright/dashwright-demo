@@ -51,14 +51,14 @@ cypress:
     # - node scripts/generate-cypress-html.js
 
     # mochaawesome
-    - mkdir -p test-reports/cypress-report test-reports/cypress-mochawesome
+    - mkdir -p test-reports/cypress-mochawesome
     - pnpm exec cypress run --browser electron --reporter cypress-multi-reporters --reporter-options "configFile=cypress/reporters/multi-reporters.json"
 
   artifacts:
     when: always
     name: "cypress-report"
     paths:
-      - test-reports/cypress-report/test-results.xml
+      # - test-reports/cypress-report/test-results.xml
       - test-reports/cypress-mochawesome/
     expire_in: 180 days
   rules:

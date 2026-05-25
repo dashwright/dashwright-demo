@@ -15,8 +15,10 @@ playwright:
   stage: test
   image: mcr.microsoft.com/playwright:v1.58.2-noble
   timeout: 60 minutes
+  before_script:
+    - corepack enable
+    - pnpm install --frozen-lockfile
   script:
-    - npm ci
     - mkdir -p test-reports/playwright-report test-reports/monocart-report
     - npx playwright test
     # Note: CTRF reporting usually has a GitLab-specific CLI or you can just store the JSON
@@ -39,8 +41,8 @@ cypress:
   timeout: 60 minutes
   before_script:
     - apt-get update && apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth python3 python3-pip
-    - npm ci --legacy-peer-deps || npm install --legacy-peer-deps
     - corepack enable
+    - pnpm install --frozen-lockfile
     - npx cypress install
   script:
     # simple report
@@ -70,8 +72,10 @@ cypress:
 #   image: node:24-bookworm
 #   needs: ["playwright", "cypress"]
 #   when: always
+#   before_script:
+#     - corepack enable
+#     - pnpm install --frozen-lockfile
 #   script:
-#     - npm ci
-#     - npm run cleanup:gitlab-artifacts 20
+#     - pnpm run cleanup:gitlab-artifacts 20
 #   variables:
 #     GITLAB_TOKEN: $GITLAB_TOKEN # Define this in Project Settings > CI/CD > Variables

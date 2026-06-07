@@ -1,42 +1,55 @@
 # DashWright Demo
 
-> Sample Playwright test artifacts for trying **DashWright** - no setup required.
+> Sample Playwright test artifacts for trying **DashWright** — no setup required.
 
 ## Try DashWright Now
 
-1. Visti **[dashwright.com](https://dashwright.com)**
-2. Click on the 'Launch Dashboard with GitHub' button to connect with your github account
-3. You should be on https://dashwright.com/dashboard/ (Manually navigate to if you are not)
-4. GitHub tab on the sidebar, input/select the following,
+### GitHub Actions
+
+1. Visit **[dashwright.com](https://dashwright.com)**
+2. Click **Launch Dashboard with GitHub** to sign in via OAuth
+3. You should land on `https://dashwright.com/dashboard/`
+4. In the **GitHub** tab on the sidebar, enter:
    - **Repository:** `dashwright/dashwright-demo`
-   - **Artifact Names, one or all:** `playwright, monocart, cypress`
-   - **Runs Per Branch**
-   - **Design:** Default is Corporate for free users. Select if not already
-5. Click **Generate** to see your dashboard!
-6. **Azure DevOps:** - Once you sign in with your GitHub account, you can connect with your org PAT(readonly). That will pull all your owner/project/pipelines so you can select in the **Repository** input. (PAT is only stored on your localStorage).
+   - **Artifact Names:** `playwright-report`, `cypress-report`, or `monocart-report` (or all three)
+   - **Design:** Free tier defaults to **Obsidian** — select it if not already chosen
+5. Click **Generate**
+
+### Azure DevOps
+
+After signing in with GitHub, switch the source toggle to **Azure**. Enter your organisation PAT (Build Read scope only). DashWright will load your organisations, projects, and pipelines for selection.
+
+Your PAT is held in a signed HttpOnly session cookie — it is never stored in the browser or logged server-side.
+
+### GitLab CI
+
+After signing in with GitHub, switch the source toggle to **GitLab**. Enter a PAT with `read_api` scope, then select:
+
+- **Project:** `qa8620938/dashwright-demo`
+- **Artifact Names:** `playwright-report`, `cypress-report`, or `monocart-report` (or all three)
 
 ## What's Inside
 
-This repository contains sample Playwright, cypress and monocart test artifacts with:
+This repository contains sample Playwright, Monocart, and Cypress test artifacts covering:
 
 - Multiple branches (main, develop, feature branches)
 - Mixed test outcomes (pass/fail)
 - Various run scenarios
 
-These artifacts power the DashWright demo so you can experience the full dashboard generation flow without setting up your own Playwright project.
+These artifacts power the DashWright demo so you can experience the full dashboard generation flow without setting up your own test project.
 
 ## About DashWright
 
 DashWright transforms raw Playwright test artifacts into beautiful, interactive dashboards.
 
-- **9 Design Themes:** From Artdeco to Cyberpunk
-- **GitHub Integration:** Pull artifacts directly from your workflows
-- **Exportable:** Download as self-contained ZIP
+- **7 Design Themes:** Art Deco, Cyberglow, Cyberpunk, Forest, Glassmorphism, Pastel, Obsidian
+- **Multi-source:** GitHub Actions, Azure DevOps, GitLab CI
+- **Exportable:** Download as a self-contained ZIP
 
 Learn more at **[dashwright.com](https://dashwright.com)**
 
 ## Issues & Feedback
 
-Found a bug or have a suggestion? [Open an issue](https://github.com/dashwright/dashwright-demo/issues)!
+Found a bug or have a suggestion? [Open an issue](https://github.com/dashwright/dashwright-demo/issues)
 
 ## License
